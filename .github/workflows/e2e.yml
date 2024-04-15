@@ -2,12 +2,10 @@ name: Tests E2E
 
 on:
   push:
-    branches:
-      - main
-      - stagging
   pull_request:
     branches:
       - stagging
+      - main
   workflow_dispatch:
 
 jobs:
