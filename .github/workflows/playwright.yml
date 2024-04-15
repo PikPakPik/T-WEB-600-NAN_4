@@ -13,16 +13,12 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: go to the directory
-      run: cd frontoffice
-    - name: check the directory
-      run: ls
     - name: Install dependencies
-      run: npm ci
+      run: cd frontoffice && npm ci
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: cd frontoffice && npx playwright install
     - name: Run Playwright tests
-      run: npx playwright test
+      run: cd frontoffice && npx playwright test
     - uses: actions/upload-artifact@v4
       if: always()
       with:
