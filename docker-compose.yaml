@@ -16,6 +16,8 @@ services:
     image: node:alpine
     working_dir: /usr/share/app
     command: "sh -c 'npm install -g npm@latest && npm install && npm run dev'"
+    ports:
+      - "5173:5173"
     volumes:
       - ./frontoffice/:/usr/share/app
 
