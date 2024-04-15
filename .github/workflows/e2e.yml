@@ -1,20 +1,13 @@
-name: Cypress Tests
-
+name: Cypress tests
 on: push
-
 jobs:
   cypress-run:
-    runs-on: ubuntu-latest
+    name: Cypress run
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
-      - name: Go to frontoffice folder
-        run: cd frontoffice
-
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
-          build: npm run build
-          start: npm start
-
+          project: ./frontoffice
