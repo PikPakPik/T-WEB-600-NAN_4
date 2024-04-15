@@ -1,0 +1,23 @@
+name: Copy repository to EpitechMscProPromo2026
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: git-mirror
+
+jobs:
+  git-mirror:
+    if: github.repository == 'T-WEB-600-NAN-1/T-WEB-600-NAN_1'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wearerequired/git-mirror-action@v1
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        with:
+          source-repo: "git@github.com:T-WEB-600-NAN-1/T-WEB-600-NAN_1.git"
+          destination-repo: "git@github.com:EpitechMscProPromo2026/T-WEB-600-NAN_1.git"
