@@ -20,16 +20,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gd \
     intl
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY php.ini /usr/local/etc/php/conf.d/php.ini
 
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 
-RUN usermod -u 1000 www-data
-RUN usermod -a -G www-data root
-RUN mkdir -p /var/www
-RUN chown -R www-data:www-data /var/www
-RUN mkdir -p /var/www/.composer
-RUN chown -R www-data:www-data /var/www/.composer
+RUN usermod -u 1000 www-data && \
+    usermod -a -G www-data root && \
+    mkdir -p /var/www && chown -R www-data:www-data /var/www && \
+    mkdir -p /var/www/.composer && \ 
+    chown -R www-data:www-data /var/www/.composer
 
 WORKDIR /var/www/project/
