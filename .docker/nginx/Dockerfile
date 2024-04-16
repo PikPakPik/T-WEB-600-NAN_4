@@ -1,7 +1,6 @@
-FROM nginx:latest
+FROM nginx:1.25.4
 
 COPY default.conf /etc/nginx/conf.d/
 
-RUN echo "upstream php-upstream { server php-fpm:9000; }" > /etc/nginx/conf.d/upstream.conf
-
-RUN usermod -u 1000 www-data
+RUN echo "upstream php-upstream { server php-fpm:9000; }" > /etc/nginx/conf.d/upstream.conf && \ 
+    usermod -u 1000 www-data
