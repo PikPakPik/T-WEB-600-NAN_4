@@ -41,6 +41,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
       POSTGRES_USER: ${POSTGRES_USER:-app}
       PGUSER: ${POSTGRES_USER:-app}
+    ports:
+      - "5432:5432"
     healthcheck:
       test: ["CMD", "pg_isready"]
       timeout: 5s
