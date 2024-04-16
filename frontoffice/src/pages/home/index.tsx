@@ -1,6 +1,25 @@
-import { Box, Button, Typography } from "@mui/material";
+import CategoryCards from "@/modules/home/components/CategoryCard";
+import { Box, Button, Grid, Icon, Typography } from "@mui/material";
+
+import { Navigation, Pagination, Scrollbar, A11y } from "swiper/modules";
+import { useMediaQuery } from "@mui/material";
+import ExtensionIcon from "@mui/icons-material/Extension";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates";
+import MilitaryTechIcon from "@mui/icons-material/MilitaryTech";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+import "@/modules/home/styles/swiper-style.css";
 
 const Homepage = () => {
+	const isXS = useMediaQuery("(max-width: 600px)");
+	const isMD = useMediaQuery("(max-width: 900px)");
 	return (
 		<>
 			<Box
@@ -93,8 +112,6 @@ const Homepage = () => {
 						fontSize: { xs: "1.7rem", md: "2.2rem" },
 						color: "orange",
 						fontWeight: "700",
-						textShadow:
-							"1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000",
 					}}
 				>
 					Our mission
@@ -124,6 +141,295 @@ const Homepage = () => {
 					>
 						Shop Now
 					</Button>
+				</Box>
+			</Box>
+			<Box sx={{ backgroundColor: "black", padding: "2rem" }}>
+				<Typography
+					variant='h2'
+					sx={{
+						fontSize: { xs: "1.7rem", md: "2.2rem" },
+						color: "white",
+						fontWeight: "700",
+						textShadow:
+							"1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000",
+						marginBottom: "2rem",
+					}}
+				>
+					Our Products:
+				</Typography>
+				<Swiper
+					modules={[Navigation, Pagination, Scrollbar, A11y]}
+					spaceBetween={30}
+					slidesPerView={isXS ? 1 : isMD ? 2 : 4}
+					navigation
+					pagination={{ clickable: true }}
+					scrollbar={{ draggable: true }}
+					style={{ padding: "0rem 5rem 2rem 5rem" }}
+				>
+					<SwiperSlide>
+						<CategoryCards
+							id={1}
+							name='Processors'
+							image='https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg'
+						/>
+					</SwiperSlide>
+					<SwiperSlide>
+						<CategoryCards
+							id={1}
+							name='Processors'
+							image='https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg'
+						/>
+					</SwiperSlide>
+					<SwiperSlide>
+						<CategoryCards
+							id={1}
+							name='Processors'
+							image='https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg'
+						/>
+					</SwiperSlide>
+					<SwiperSlide>
+						<CategoryCards
+							id={1}
+							name='Processors'
+							image='https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg'
+						/>
+					</SwiperSlide>
+					<SwiperSlide>
+						<CategoryCards
+							id={1}
+							name='Processors'
+							image='https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg'
+						/>
+					</SwiperSlide>
+				</Swiper>
+			</Box>
+			<Box>
+				<Grid
+					container
+					spacing={5}
+					sx={{
+						paddingY: "2rem",
+						paddingX: { xs: "1rem", md: "2rem" },
+					}}
+				>
+					<Grid item xs={12} md={6} lg={3}>
+						<Box
+							sx={{
+								textAlign: "center",
+								display: "flex",
+								flexDirection: "column",
+								gap: "1rem",
+							}}
+						>
+							<MilitaryTechIcon
+								sx={{
+									margin: "auto",
+									fontSize: "8rem",
+									color: "orange",
+								}}
+							/>
+							<Typography
+								variant='h2'
+								sx={{
+									fontSize: { xs: "1.3rem", md: "2rem" },
+									color: "orange",
+									fontWeight: "700",
+								}}
+							>
+								Quality and Reliability
+							</Typography>
+							<Typography
+								variant='h4'
+								sx={{
+									fontSize: { xs: "1rem", md: "1.5rem" },
+									color: "black",
+								}}
+							>
+								We uphold the highest standards of excellence in every aspect of
+								our operations, ensuring that our customers receive reliable,
+								durable, and high-performance solutions they can trust.
+							</Typography>
+						</Box>
+					</Grid>
+					<Grid item xs={12} md={6} lg={3}>
+						<Box
+							sx={{
+								textAlign: "center",
+								display: "flex",
+								flexDirection: "column",
+								gap: "1rem",
+							}}
+						>
+							<ExtensionIcon
+								sx={{
+									margin: "auto",
+									fontSize: "8rem",
+									color: "orange",
+								}}
+							/>
+							<Typography
+								variant='h2'
+								sx={{
+									fontSize: { xs: "1.3rem", md: "2rem" },
+									color: "orange",
+									fontWeight: "700",
+								}}
+							>
+								Integrity and Transparency
+							</Typography>
+							<Typography
+								variant='h4'
+								sx={{
+									fontSize: { xs: "1rem", md: "1.5rem" },
+									color: "black",
+								}}
+							>
+								We conduct ourselves with the highest levels of integrity and
+								transparency, earning the trust and respect of our customers,
+								partners, and employees through open and honest communication
+								and ethical business practices.
+							</Typography>
+						</Box>
+					</Grid>
+					<Grid item xs={12} md={6} lg={3}>
+						<Box
+							sx={{
+								textAlign: "center",
+								display: "flex",
+								flexDirection: "column",
+								gap: "1rem",
+							}}
+						>
+							<TipsAndUpdatesIcon
+								sx={{
+									margin: "auto",
+									fontSize: "8rem",
+									color: "orange",
+								}}
+							/>
+							<Typography
+								variant='h2'
+								sx={{
+									fontSize: { xs: "1.3rem", md: "2rem" },
+									color: "orange",
+									fontWeight: "700",
+								}}
+							>
+								Innovation and Technology Leadership
+							</Typography>
+							<Typography
+								variant='h4'
+								sx={{
+									fontSize: { xs: "1rem", md: "1.5rem" },
+									color: "black",
+								}}
+							>
+								We stay at the forefront of innovation, continuously seeking out
+								new advancements and solutions to provide cutting-edge products
+								and services that meet the evolving needs of our customers.
+							</Typography>
+						</Box>
+					</Grid>
+					<Grid item xs={12} md={6} lg={3}>
+						<Box
+							sx={{
+								textAlign: "center",
+								display: "flex",
+								flexDirection: "column",
+								gap: "1rem",
+							}}
+						>
+							<SupportAgentIcon
+								sx={{
+									margin: "auto",
+									fontSize: "8rem",
+									color: "orange",
+								}}
+							/>
+							<Typography
+								variant='h2'
+								sx={{
+									fontSize: { xs: "1.3rem", md: "2rem" },
+									color: "orange",
+									fontWeight: "700",
+								}}
+							>
+								Outstanding Customer Service
+							</Typography>
+							<Typography
+								variant='h4'
+								sx={{
+									fontSize: { xs: "1rem", md: "1.5rem" },
+									color: "black",
+								}}
+							>
+								Our dedicated team goes above and beyond to provide personalized
+								support and solutions, ensuring our customers' satisfaction and
+								building long-lasting relationships based on trust and
+								reliability.
+							</Typography>
+						</Box>
+					</Grid>
+				</Grid>
+			</Box>
+			<Box
+				sx={{
+					height: "75vh",
+					backgroundPosition: "center",
+					backgroundSize: "cover",
+					position: "relative",
+					backgroundImage:
+						"url(https://www.videogameschronicle.com/files/2022/10/saint-pic-10.webp)",
+				}}
+			>
+				<Box
+					sx={{
+						display: "flex",
+						flexDirection: "column",
+						gap: "1rem",
+
+						backgroundColor: "rgba(0, 0, 0, 0.5)",
+						width: {xs: "90%", md: "75%", lg: "60%"},
+						padding: "1rem",
+						position: "absolute",
+						bottom: "2rem",
+					}}
+				>
+					<Typography
+						variant='h1'
+						sx={{
+							fontSize: { xs: "1.5rem", md: "3rem" },
+							color: "orange",
+							fontWeight: "700",
+						}}
+					>
+						Join the Elite Gaming Community
+					</Typography>
+					<Typography
+						variant='h3'
+						sx={{
+							fontSize: { xs: "1.2rem", md: "2rem" },
+							color: "white",
+							fontWeight: "700",
+						}}
+					>
+						Discover the latest games, hardware, and accessories to take your
+						gaming experience to the next level.
+					</Typography>
+					<Box sx={{ }}>
+						<Button
+							variant='contained'
+							sx={{
+								fontSize: { xs: "1rem", md: "1.5rem" },
+								backgroundColor: "orange",
+								fontWeight: "700",
+								color: "black",
+								
+							}}
+						>
+							Join Now
+						</Button>
+					</Box>
 				</Box>
 			</Box>
 		</>

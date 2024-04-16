@@ -11,14 +11,11 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
-import { useMediaQuery } from "@mui/material";
 
 const pages = ["Products", "About us", "Contact us"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
-	const isMobile = useMediaQuery("(max-width:600px)");
 	const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
 		null,
 	);
