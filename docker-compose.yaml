@@ -21,7 +21,6 @@ services:
     volumes:
       - ./frontoffice/:/usr/share/app
 
-
   nginx:
     build: .docker/nginx
     ports:
