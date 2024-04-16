@@ -3,9 +3,6 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-
-run-name: Tests
-    
 jobs: 
   ######################################################
   #                     FRONTEND                       #
@@ -22,6 +19,7 @@ jobs:
     - name: Lint
       run: cd frontoffice && npm run lint
   tests_front:
+    needs: [lint_front]
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -62,6 +60,7 @@ jobs:
       run: cd app && ./vendor/bin/phpcs --standard=PSR12 src/
   tests_backend:
     runs-on: ${{ matrix.operating-system }}
+    needs: [lint_backend]
     name: PHP ${{ matrix.php }} and Symfony ${{ matrix.symfony }}
     strategy:
       matrix:
