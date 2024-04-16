@@ -38,6 +38,8 @@ jobs:
         env:
           SYMFONY_REQUIRE: ${{ matrix.symfony }}
         uses: ramsey/composer-install@v2
+        with:
+            working-directory: "app/"
 
       - name: Run test suite on PHP ${{ matrix.php }} and Symfony ${{ matrix.symfony }}
         run: cd app/ && ./vendor/bin/phpunit
