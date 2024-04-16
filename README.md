@@ -1,5 +1,7 @@
 <img src="https://i.imgur.com/TBeuc8y.png" alt="TrellTech" width="300" height=300 align="right"/>
 
+[![Main](https://github.com/EpitechMscProPromo2026/T-WEB-600-NAN_4/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/EpitechMscProPromo2026/T-WEB-600-NAN_4/actions/workflows/ci.yml) 
+
 # Welcome to ECommerce :rocket:
 
 The ECommerce project was executed by a group of 2/3 students from Epitech Nantes.  
@@ -8,6 +10,7 @@ We need to create an ECommerce app with some obligations like:
 - Frontend with React
 - Have Tests (Unit, Integration, Functional)
 - Have a dockerized environment
+
 
 ## Table of contents
 1. [Prerequisites](#prerequisites)
