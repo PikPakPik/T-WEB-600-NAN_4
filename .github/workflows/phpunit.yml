@@ -34,6 +34,9 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: flex
 
+      - name: Create .env file
+        run: cd app && cp .env.example .env
+
       - name: Download dependencies
         env:
           SYMFONY_REQUIRE: ${{ matrix.symfony }}
