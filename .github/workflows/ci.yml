@@ -3,12 +3,14 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+
+run-name: Tests
     
 jobs: 
   ######################################################
   #                     FRONTEND                       #
   ######################################################
-  lint-front:
+  lint_front:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -19,7 +21,7 @@ jobs:
       run: cd frontoffice && npm ci
     - name: Lint
       run: cd frontoffice && npm run lint
-  integration-tests-front:
+  tests_front:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -43,7 +45,7 @@ jobs:
   ######################################################
   #                     BACKEND                        #
   ######################################################
-  lint-backend:
+  lint_backend:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -58,7 +60,7 @@ jobs:
       run: cd app && composer install
     - name: Lint
       run: cd app && ./vendor/bin/phpcs --standard=PSR12 src/
-  units-tests-backend:
+  tests_backend:
     runs-on: ${{ matrix.operating-system }}
     name: PHP ${{ matrix.php }} and Symfony ${{ matrix.symfony }}
     strategy:
