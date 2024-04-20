@@ -164,7 +164,8 @@ const Homepage = () => {
 					navigation
 					pagination={{ clickable: true }}
 					scrollbar={{ draggable: true }}
-					style={{ padding: "0rem 5rem 2rem 5rem" }}
+					style={{ padding: "0rem 5rem 2rem 5rem",gap: "1rem"}}
+					
 				>
 					<SwiperSlide>
 						<CategoryCards
