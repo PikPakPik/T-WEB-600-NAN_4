@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   php-fpm:
@@ -21,7 +21,6 @@ services:
     volumes:
       - ./frontoffice/:/usr/share/app
 
-
   nginx:
     build: .docker/nginx
     ports:
@@ -40,6 +39,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-app}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
       POSTGRES_USER: ${POSTGRES_USER:-app}
+    ports:
+      - "5432:5432"
     healthcheck:
       test: ["CMD", "pg_isready"]
       timeout: 5s
