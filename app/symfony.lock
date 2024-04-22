@@ -5,7 +5,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "main",
             "version": "2.12",
-            "ref": "32f890075233ac4a1176e848a0f8e932ac6536d6"
+            "ref": "a952424ca4d5ab4dbc66c8be78236a5f13124112"
         },
         "files": [
             "config/packages/doctrine.yaml",
@@ -34,9 +34,8 @@
             "ref": "1d01ec03c6ecbd67c3375c5478c9a423ae5d6a33"
         },
         "files": [
-<<<<<<< HEAD
-            "./config/packages/doctrine_migrations.yaml",
-            "./migrations/.gitignore"
+            "config/packages/doctrine_migrations.yaml",
+            "migrations/.gitignore"
         ]
     },
     "friendsofsymfony/rest-bundle": {
@@ -72,11 +71,7 @@
             "ref": "6bea22e6c564fba3a1391615cada1437d0bde39c"
         },
         "files": [
-            "./config/packages/nelmio_cors.yaml"
-=======
-            "config/packages/doctrine_migrations.yaml",
-            "migrations/.gitignore"
->>>>>>> stagging
+            "config/packages/nelmio_cors.yaml"
         ]
     },
     "phpunit/phpunit": {
@@ -345,6 +340,6 @@
         "version": "v1.17.0"
     },
     "twig/extra-bundle": {
-        "version": "v3.8.0"
+        "version": "v3.9.3"
     }
 }
