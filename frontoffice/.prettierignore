@@ -1,0 +1,11 @@
+# Add files here to ignore them from prettier formatting
+node_modules
+dist
+package-lock.json
+pnpm-lock.yaml
+.git
+tsconfig.*.json
+tsconfig.json
+package.json
+patch.js
+pnpm-lock.yaml
