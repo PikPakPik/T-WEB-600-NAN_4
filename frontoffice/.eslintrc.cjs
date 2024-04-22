@@ -1,6 +1,7 @@
 module.exports = {
   root: true,
   env: { browser: true, es2020: true },
+  indent: [2, 2, { SwitchCase: 1}],
   extends: [
     'eslint:recommended',
     "plugin:@typescript-eslint/eslint-recommended",
