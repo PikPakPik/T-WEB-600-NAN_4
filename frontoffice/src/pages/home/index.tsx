@@ -1,5 +1,5 @@
 import CategoryCards from '@/modules/home/components/CategoryCard'
-import { Box, Button, Grid, Icon, Typography } from '@mui/material'
+import { Box, Button, Grid, Typography } from '@mui/material'
 
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules'
 import { useMediaQuery } from '@mui/material'
