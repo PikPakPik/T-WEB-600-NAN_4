@@ -29,6 +29,9 @@ class Order
     #[ORM\OneToMany(targetEntity: product::class, mappedBy: 'command')]
     private Collection $product;
 
+    #[ORM\OneToOne(mappedBy: 'products', cascade: ['persist', 'remove'])]
+    private ?Cart $products = null;
+
     public function __construct()
     {
         $this->product = new ArrayCollection();
@@ -89,6 +92,28 @@ class Order
                 $product->setCommand(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProducts(): ?Cart
+    {
+        return $this->products;
+    }
+
+    public function setProducts(?Cart $products): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($products === null && $this->products !== null) {
+            $this->products->setProducts(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($products !== null && $products->getProducts() !== $this) {
+            $products->setProducts($this);
+        }
+
+        $this->products = $products;
 
         return $this;
     }

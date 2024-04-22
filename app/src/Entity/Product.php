@@ -24,9 +24,26 @@ class Product
 
     #[ORM\Column]
     private ?float $price = null;
-
     #[ORM\ManyToOne(inversedBy: 'product')]
     private ?Order $command = null;
+
+    #[ORM\Column]
+    private ?bool $active = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $discount = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $discountPrice = null;
+
+    #[ORM\Column]
+    private ?bool $onSale = null;
+
+    #[ORM\Column]
+    private ?int $stock = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function getId(): ?int
     {
@@ -89,6 +106,78 @@ class Product
     public function setCommand(?Order $command): static
     {
         $this->command = $command;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getDiscount(): ?float
+    {
+        return $this->discount;
+    }
+
+    public function setDiscount(?float $discount): static
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    public function getDiscountPrice(): ?float
+    {
+        return $this->discountPrice;
+    }
+
+    public function setDiscountPrice(?float $discountPrice): static
+    {
+        $this->discountPrice = $discountPrice;
+
+        return $this;
+    }
+
+    public function isOnSale(): ?bool
+    {
+        return $this->onSale;
+    }
+
+    public function setOnSale(bool $onSale): static
+    {
+        $this->onSale = $onSale;
+
+        return $this;
+    }
+
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function setStock(int $stock): static
+    {
+        $this->stock = $stock;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
