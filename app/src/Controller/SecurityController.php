@@ -5,20 +5,24 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
     #[Route(path: 'api/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): JsonResponse
+    public function login(AuthenticationUtils $authenticationUtils, Request $request): JsonResponse
     {
         $responseData = []; // Structure de la réponse JSON
-
+        $data = json_decode($request->getContent(), true);
         if ($this->getUser()) {
             // Si l'utilisateur est déjà connecté, vous pouvez renvoyer un message indiquant qu'il est déjà connecté
             $responseData['message'] = 'User is already logged in.';
             return new JsonResponse($responseData);
+        }
+        else{
+
         }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
