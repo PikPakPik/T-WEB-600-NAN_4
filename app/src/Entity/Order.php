@@ -23,19 +23,6 @@ class Order
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $creationDate = null;
 
-    /**
-     * @var Collection<int, product>
-     */
-    #[ORM\OneToMany(targetEntity: product::class, mappedBy: 'command')]
-    private Collection $product;
-
-    #[ORM\OneToOne(mappedBy: 'products', cascade: ['persist', 'remove'])]
-    private ?Cart $products = null;
-
-    public function __construct()
-    {
-        $this->product = new ArrayCollection();
-    }
 
     public function getId(): ?int
     {

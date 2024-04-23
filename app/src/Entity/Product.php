@@ -21,13 +21,11 @@ class Product
 
     #[ORM\Column(length: 255)]
     private ?string $photo = null;
+    #[ORM\Column(nullable:true)]
+    private ?int $price = null;
 
-    #[ORM\Column]
-    private ?float $price = null;
-    #[ORM\ManyToOne(inversedBy: 'product')]
-    private ?Order $command = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?bool $active = null;
 
     #[ORM\Column(nullable: true)]
@@ -36,15 +34,14 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?float $discountPrice = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?bool $onSale = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?int $stock = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true )]
     private ?\DateTimeImmutable $updatedAt = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -98,17 +95,7 @@ class Product
         return $this;
     }
 
-    public function getCommand(): ?Order
-    {
-        return $this->command;
-    }
 
-    public function setCommand(?Order $command): static
-    {
-        $this->command = $command;
-
-        return $this;
-    }
 
     public function isActive(): ?bool
     {
