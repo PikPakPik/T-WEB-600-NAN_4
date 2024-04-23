@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
 use App\Security\UsersAuthenticator;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,9 +25,11 @@ class RegistrationController extends AbstractController
     {
     }
 
-    #[Route('/api/register', name: 'register', methods:"POST")]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    #[Route('/api/register', name: 'register', methods: "POST")]
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): JsonResponse
     {
+        $responseData = []; // Structure de la réponse JSON
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -44,7 +47,9 @@ class RegistrationController extends AbstractController
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            $this->emailVerifier->sendEmailConfirmation(
+                'app_verify_email',
+                $user,
                 (new TemplatedEmail())
                     ->from(new Address('rollandtsokeng@gmail.com', 'nan 4 BOT'))
                     ->to($user->getEmail())
@@ -52,14 +57,20 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            // do anything else you need here, like send an email
+            // On crée la réponse JSON avec un message de succès
+            $responseData['success'] = true;
+            $responseData['message'] = 'Registration successful. Please verify your email.';
 
-            return $security->login($user, UsersAuthenticator::class, 'login');
+            // Vous pouvez ajouter d'autres données à la réponse si nécessaire
+
+            return new JsonResponse($responseData);
         }
 
-        return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
-        ]);
+        // En cas d'erreur de validation du formulaire
+        $responseData['success'] = false;
+        // Ajoutez des messages d'erreur ou toute autre information utile à la réponse JSON
+
+        return new JsonResponse($responseData, Response::HTTP_BAD_REQUEST);
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
