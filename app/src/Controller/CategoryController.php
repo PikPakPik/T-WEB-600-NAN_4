@@ -4,11 +4,8 @@ namespace App\Controller;
 
 use App\DTO\CategoryDTO;
 use App\DTO\PaginationDTO;
-use App\DTO\ProductDTO;
 use App\Entity\Category;
-use App\Entity\Product;
 use App\Repository\CategoryRepository;
-use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
