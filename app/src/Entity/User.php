@@ -2,61 +2,98 @@
 
 namespace App\Entity;
 
+use App\EntityListener\UserListener;
 use App\Repository\UserRepository;
+use App\Trait\DateTimeImmutableTrait;
+use App\Trait\DtoHydratorTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
-#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[ORM\Table(name: 'users')]
+#[ORM\EntityListeners([UserListener::class])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    use DateTimeImmutableTrait;
+    use DtoHydratorTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, nullable:true)]
-    private ?string $login = null;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $firstname = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $lastname = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     private ?string $email = null;
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
+
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $password = null;
+
+    /** @var string[] $roles */
+    #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @return int|null
      */
-    #[ORM\Column]
-    private ?string $password = null;
-
-    #[ORM\Column(type: 'boolean', nullable:true)]
-    private $isVerified = false;
-
     public function getId(): ?int
     {
         return $this->id;
     }
-    public function getLogin(): ?string
+
+    /**
+     * @return string|null
+     */
+    public function getFirstname(): ?string
     {
-        return $this->login;
+        return $this->firstname;
     }
-    public function setLogin(string $login)
+
+    /**
+     * @param string|null $firstname
+     * @return void
+     */
+    public function setFirstname(?string $firstname): void
     {
-        $this->login = $login;
-        return $this;
+        $this->firstname = $firstname;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    /**
+     * @param string|null $lastname
+     * @return void
+     */
+    public function setLastname(?string $lastname): void
+    {
+        $this->lastname = $lastname;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
+    /**
+     * @param string $email
+     * @return $this
+     */
     public function setEmail(string $email): static
     {
         $this->email = $email;
@@ -65,31 +102,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * A visual identifier that represents this user.
-     *
-     * @see UserInterface
+     * @return string
      */
-    public function getUserIdentifier(): string
+    public function getPassword(): string
     {
-        return (string) $this->email;
+        return $this->password;
     }
 
     /**
-     * @see UserInterface
-     *
-     * @return list<string>
+     * @param string $password
+     * @return $this
+     */
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @return string[]
      */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
 
     /**
-     * @param list<string> $roles
+     * @param string[] $roles
      */
     public function setRoles(array $roles): static
     {
@@ -99,18 +142,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @see PasswordAuthenticatedUserInterface
+     * @see UserInterface
      */
-    public function getPassword(): string
+    public function getUserIdentifier(): string
     {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): static
-    {
-        $this->password = $password;
-
-        return $this;
+        return (string) $this->email;
     }
 
     /**
@@ -120,17 +156,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-    public function isVerified(): bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setVerified(bool $isVerified): static
-    {
-        $this->isVerified = $isVerified;
-
-        return $this;
     }
 }

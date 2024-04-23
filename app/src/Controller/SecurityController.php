@@ -2,54 +2,50 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
+use App\DTO\RegisterDTO;
 use App\Entity\User;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route(path: 'api/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils, Request $request): JsonResponse
+    #[Route('/api/login', name: 'api_login', methods: ['POST'], format: 'json')]
+    public function login(): Response
     {
-        $responseData = []; // Structure de la réponse JSON
-        $data = json_decode($request->getContent(), true);
-        if ($this->getUser()) {
-            // Si l'utilisateur est déjà connecté, vous pouvez renvoyer un message indiquant qu'il est déjà connecté
-            $responseData['message'] = 'User is already logged in.';
-            return new JsonResponse($responseData);
-        }
-        else{
-            $user = $this->getDoctrine()->getRepository(User::class)
-            ->findOneBy(['login' => $data['login']]);
-            if(!$user || !password_verify($data['password'], $user->getPassword())) {
-                return $this->json(['error' => 'Invalid credentials'], 401);
-            }
-        }
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
-
-        // Si vous souhaitez également renvoyer des informations sur l'erreur de connexion ou le dernier nom d'utilisateur,
-        // vous pouvez les ajouter à la réponse JSON
-        $responseData['last_username'] = $lastUsername;
-        $responseData['error'] = $error ? $error->getMessage() : null;
-
-        return new JsonResponse($responseData);
+        return $this->json([
+            'code' => Response::HTTP_OK,
+            'message' => 'Route not implemented yet.',
+        ]);
     }
 
-    #[Route(path: '/api/logout', name: 'app_logout')]
-    public function logout(): JsonResponse
-    {
-        $responseData = []; // Structure de la réponse JSON
+    #[Route('/api/register', name: 'api_register', methods: ['POST'], format: 'json')]
+    public function register(
+        #[MapRequestPayload] RegisterDTO $registerDTO,
+        UserRepository $userRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        $checkIfUserExist = $userRepository->findOneBy(['email' => $registerDTO->email]);
 
-        // Vous pouvez ajouter un message indiquant que l'utilisateur a été déconnecté avec succès
-        $responseData['message'] = 'User logged out successfully.';
+        if ($checkIfUserExist) {
+            return $this->json([
+                'code' => Response::HTTP_CONFLICT,
+                'message' => 'User already exist.',
+            ]);
+        }
 
-        return new JsonResponse($responseData);
+        $user = new User();
+        $user->withObject($registerDTO);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        return $this->json([
+            'code' => Response::HTTP_OK,
+            'message' => 'User created successfully.',
+        ]);
     }
 }
