@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\EntityListener\UserListener;
 use App\Repository\UserRepository;
 use App\Trait\DateTimeImmutableTrait;
+use App\Trait\DtoHydratorTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
@@ -16,19 +20,24 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use DateTimeImmutableTrait;
+    use DtoHydratorTrait;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
+    #[Groups(['user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups(['user:read'])]
     private ?string $firstname = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups(['user:read'])]
     private ?string $lastname = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
+    #[Groups(['user:read'])]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
@@ -36,6 +45,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /** @var string[] $roles */
     #[ORM\Column(type: Types::JSON)]
+    #[Groups(['user:read'])]
     private array $roles = [];
 
     /**

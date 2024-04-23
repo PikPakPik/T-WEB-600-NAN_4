@@ -10,9 +10,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
 trait DateTimeImmutableTrait
 {
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Groups(['date:read'])]
     protected ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['date:read'])]
     protected ?DateTimeImmutable $updatedAt = null;
 
     /**
