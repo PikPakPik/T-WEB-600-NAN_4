@@ -18,6 +18,7 @@ import 'swiper/css/scrollbar'
 import '@/modules/home/styles/swiper-style.css'
 
 const Homepage = () => {
+
     const isXS = useMediaQuery('(max-width: 600px)')
     const isMD = useMediaQuery('(max-width: 900px)')
     return (
