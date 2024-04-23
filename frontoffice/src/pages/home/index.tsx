@@ -1,12 +1,13 @@
 import CategoryCards from '@/modules/home/components/CategoryCard'
 import { Box, Button, Grid, Typography } from '@mui/material'
-
+import categories from '@/common/fakeData/categories.json'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules'
 import { useMediaQuery } from '@mui/material'
 import ExtensionIcon from '@mui/icons-material/Extension'
 import SupportAgentIcon from '@mui/icons-material/SupportAgent'
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates'
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech'
+import { useNavigate } from 'react-router-dom'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 
@@ -20,6 +21,8 @@ import '@/modules/home/styles/swiper-style.css'
 const Homepage = () => {
     const isXS = useMediaQuery('(max-width: 600px)')
     const isMD = useMediaQuery('(max-width: 900px)')
+    const navigate = useNavigate()
+
     return (
         <>
             <Box
@@ -155,47 +158,24 @@ const Homepage = () => {
                 <Swiper
                     modules={[Navigation, Pagination, Scrollbar, A11y]}
                     spaceBetween={30}
-                    slidesPerView={isXS ? 1 : isMD ? 2 : 4}
+                    slidesPerView={isXS ? 1 : isMD ? 2 : 3}
                     navigation
                     pagination={{ clickable: true }}
                     scrollbar={{ draggable: true }}
                     style={{ padding: '0rem 5rem 2rem 5rem', gap: '1rem' }}
                 >
-                    <SwiperSlide>
-                        <CategoryCards
-                            id={1}
-                            name="Processors"
-                            image="https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg"
-                        />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <CategoryCards
-                            id={1}
-                            name="Processors"
-                            image="https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg"
-                        />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <CategoryCards
-                            id={1}
-                            name="Processors"
-                            image="https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg"
-                        />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <CategoryCards
-                            id={1}
-                            name="Processors"
-                            image="https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg"
-                        />
-                    </SwiperSlide>
-                    <SwiperSlide>
-                        <CategoryCards
-                            id={1}
-                            name="Processors"
-                            image="https://www.trustedreviews.com/wp-content/uploads/sites/54/2021/10/Intel-Alder-Lake-5-920x570.jpg"
-                        />
-                    </SwiperSlide>
+                    {categories.map((category) => (
+                        <SwiperSlide
+                            key={category.id}
+                            onClick={() => navigate(`/category/${category.id}`)}
+                        >
+                            <CategoryCards
+                                id={category.id}
+                                name={category.name}
+                                image={category.image}
+                            />
+                        </SwiperSlide>
+                    ))}
                 </Swiper>
             </Box>
             <Box>

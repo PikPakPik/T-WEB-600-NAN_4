@@ -3,6 +3,7 @@ import Homepage from '@/pages/home/index'
 import AboutPage from '@/pages/about'
 import TopBar from '@/common/Layout/TopBar'
 import LoginPage from '@/pages/login'
+import CategoryPage from '@/pages/category'
 import RegisterPage from '@/pages/register'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Footer from '@/common/Layout/Footer'
@@ -31,6 +32,10 @@ function App() {
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
+                        <Route path="/category">
+                            <Route path="" element={<CategoryPage />} />
+                            <Route path=":id" element={<CategoryPage />} />
+                        </Route>
                         <Route path="*" element={<Homepage />} />
                     </Routes>
                 </Box>

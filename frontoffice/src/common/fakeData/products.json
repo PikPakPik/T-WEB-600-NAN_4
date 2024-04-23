@@ -5,42 +5,48 @@
             "name": "Laptop",
             "category_id": 1,
             "price": 999,
-            "description": "Powerful laptop for all your computing needs."
+            "description": "Powerful laptop for all your computing needs.",
+            "image": "https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg"
         },
         {
             "id": 102,
             "name": "T-Shirt",
             "category_id": 2,
             "price": 19.99,
-            "description": "Comfortable cotton T-shirt for everyday wear."
+            "description": "Comfortable cotton T-shirt for everyday wear.",
+            "image": "https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg"
         },
         {
             "id": 103,
             "name": "Coffee Maker",
             "category_id": 3,
             "price": 49.99,
-            "description": "Brew delicious coffee at home with this coffee maker."
+            "description": "Brew delicious coffee at home with this coffee maker.",
+            "image":"https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg"
         },
         {
             "id": 104,
             "name": "Smartphone",
             "category_id": 1,
             "price": 699,
-            "description": "Stay connected on the go with this powerful smartphone."
+            "description": "Stay connected on the go with this powerful smartphone.",
+            "image": "https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg"
         },
         {
             "id": 105,
             "name": "Dress",
             "category_id": 2,
             "price": 39.99,
-            "description": "Elegant dress for special occasions."
+            "description": "Elegant dress for special occasions.",
+            "image": "https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg"
         },
         {
             "id": 106,
             "name": "Toaster",
             "category_id": 3,
             "price": 29.99,
-            "description": "Make crispy toast easily with this toaster."
+            "description": "Make crispy toast easily with this toaster.",
+            "image": "https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg"
         }
     ]
 }
