@@ -24,12 +24,7 @@ class CategoryController extends AbstractController
     {
         $category = $categoryRepository->getCategories($paginationDTO);
         return $this->json(
-            $category,
-            context: [
-                'groups' => [
-                    'category:read',
-                ]
-            ]
+            $category
         );
     }
 

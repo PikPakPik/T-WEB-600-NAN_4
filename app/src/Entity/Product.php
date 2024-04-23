@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use App\Trait\DateTimeImmutableTrait;
 use App\Trait\DtoHydratorTrait;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -18,6 +19,7 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -35,6 +37,22 @@ class Product
     #[ORM\Column]
     #[Groups(['product:read'])]
     private ?float $price = null;
+
+    #[ORM\Column]
+    #[Groups(['product:read'])]
+    private ?int $discount = null;
+
+    #[ORM\Column]
+    #[Groups(['product:read'])]
+    private ?int $discountPrice = null;
+
+    #[ORM\Column]
+    #[Groups(['product:read'])]
+    private ?bool $active = null;
+
+    #[ORM\Column]
+    #[Groups(['product:read'])]
+    private ?int $stock = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[Groups(['product:read'])]
@@ -101,6 +119,54 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getDiscount(): ?int
+    {
+        return $this->discount;
+    }
+
+    public function setDiscount(int $discount): static
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    public function getDiscountPrice(): ?int
+    {
+        return $this->discountPrice;
+    }
+
+    public function setDiscountPrice(int $discountPrice): static
+    {
+        $this->discountPrice = $discountPrice;
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function setStock(int $stock): static
+    {
+        $this->stock = $stock;
 
         return $this;
     }
