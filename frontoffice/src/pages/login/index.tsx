@@ -5,13 +5,37 @@ const LoginPage = () => {
         <>
             <Box
                 sx={{
-                    paddingTop: '20vh',
+                    marginTop: '20vh',
+                    marginBottom: '4rem',
+                    backgroundColor: 'white',
+                    width: { xs: '80%', sm: '60%', md: '50%' },
+                    marginX: 'auto',
+                    padding: { xs: '1rem', sm: '1.5rem', md: '2rem' },
+                    borderRadius: '1rem',
+                    boxShadow: '0 0 10px 0 rgba(100, 100, 100, 0.8)',
                 }}
             >
-                <Typography variant="h2" textAlign="center" sx={{ mt: 2, fontWeight: '600' }}>
+                <Typography
+                    variant="h2"
+                    textAlign="center"
+                    sx={{
+                        mt: 2,
+                        fontWeight: '600',
+                        fontSize: { xs: '2.5rem', sm: '3rem', md: '4rem' },
+                    }}
+                >
                     Welcome back to <span style={{ color: '#136207', fontWeight: '800' }}>BP</span>
                 </Typography>
-                <Typography variant="h3" textAlign="center" sx={{ mt: 2 }}>
+                <Typography
+                    variant="h3"
+                    textAlign="center"
+                    sx={{
+                        mt: 2,
+                        color: '#136207',
+                        fontWeight: '700',
+                        fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                    }}
+                >
                     Login
                 </Typography>
                 <Box
@@ -20,7 +44,6 @@ const LoginPage = () => {
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 2,
-                        width: { xs: '100%', sm: '50%', md: '40%' },
                         margin: 'auto',
                         mt: 4,
                     }}
