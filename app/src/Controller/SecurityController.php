@@ -33,7 +33,6 @@ class SecurityController extends AbstractController
         if ($checkIfUserExist) {
             return $this->json([
                 'code' => Response::HTTP_CONFLICT,
-                'i18n' => 'user.already_exist',
                 'message' => 'User already exist.',
             ]);
         }
@@ -45,7 +44,6 @@ class SecurityController extends AbstractController
 
         return $this->json([
             'code' => Response::HTTP_OK,
-            'i18n' => 'user.created',
             'message' => 'User created successfully.',
         ]);
     }
