@@ -51,28 +51,12 @@ class RegistrationController extends AbstractController
             $form = $this->createForm(RegistrationFormType::class, $user);
             $form->handleRequest($request);
         }
-        else{
-        $this->emailVerifier->sendEmailConfirmation(
-            'app_verify_email',
-            $user,
-            (new TemplatedEmail())
-                ->from(new Address('rollandtsokeng@gmail.com', 'nan 4 BOT'))
-                ->to($user->getEmail())
-                ->subject('Please Confirm your Email')
-                ->htmlTemplate('registration/confirmation_email.html.twig')
-        );
-        $em = $this->$entityManager();
-        $em->persist($user);
-        $em->flush();
-        $responseData['message'] = 'Registration successful. Please verify your email.';
+        
+        $entityManager->persist($user);
+        $entityManager->flush();
         return $this->json(['message' => 'User created'], 201);
 
-    }
-        // En cas d'erreur de validation du formulaire
-        $responseData['success'] = false;
-        // Ajoutez des messages d'erreur ou toute autre information utile à la réponse JSON
 
-        return new JsonResponse($responseData, Response::HTTP_BAD_REQUEST);
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]

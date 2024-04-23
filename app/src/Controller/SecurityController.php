@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\User;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -22,7 +23,11 @@ class SecurityController extends AbstractController
             return new JsonResponse($responseData);
         }
         else{
-
+            $user = $this->getDoctrine()->getRepository(User::class)
+            ->findOneBy(['login' => $data['login']]);
+            if(!$user || !password_verify($data['password'], $user->getPassword())) {
+                return $this->json(['error' => 'Invalid credentials'], 401);
+            }
         }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
