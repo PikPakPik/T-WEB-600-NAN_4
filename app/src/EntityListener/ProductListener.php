@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace App\EntityListener;
 
 use App\Entity\Product;
-use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-#[AsEntityListener(event: Events::prePersist, method: 'onPrePersist', entity: User::class)]
-#[AsEntityListener(event: Events::preUpdate, method: 'onPreUpdate', entity: User::class)]
+#[AsEntityListener(event: Events::prePersist, method: 'onPrePersist', entity: Product::class)]
+#[AsEntityListener(event: Events::preUpdate, method: 'onPreUpdate', entity: Product::class)]
 readonly class ProductListener
 {
 
