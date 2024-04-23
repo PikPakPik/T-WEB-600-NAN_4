@@ -10,9 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/api/users')]
 class UserController extends AbstractController
 {
-    #[Route('/api/users', name: 'api_get_user', methods: ['GET'], format: 'json')]
+    #[Route('', name: 'api_get_user', methods: ['GET'], format: 'json')]
     public function user(): Response
     {
         /** @var User $user */
@@ -28,7 +29,7 @@ class UserController extends AbstractController
         );
     }
 
-    #[Route('/api/users', name: 'app_update_user_data', methods: ['PUT'], format: 'json')]
+    #[Route('', name: 'app_update_user_data', methods: ['PATCH'], format: 'json')]
     public function updateUser(
         #[MapRequestPayload] UpdateUserDTO $updateDTO,
         EntityManagerInterface $entityManager
