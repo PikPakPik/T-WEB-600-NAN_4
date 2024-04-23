@@ -6,6 +6,7 @@ use App\Repository\ProductRepository;
 use App\Trait\DateTimeImmutableTrait;
 use App\Trait\DtoHydratorTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
 #[ORM\Table(name: 'products')]
@@ -20,16 +21,24 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['product:read'])]
     private string $name;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:read'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:read'])]
     private ?string $photo = null;
 
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private ?float $price = null;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[Groups(['product:read'])]
+    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -80,6 +89,18 @@ class Product
     public function setPrice(float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
 
         return $this;
     }

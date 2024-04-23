@@ -31,10 +31,7 @@ class SecurityController extends AbstractController
         $checkIfUserExist = $userRepository->findOneBy(['email' => $registerDTO->email]);
 
         if ($checkIfUserExist) {
-            return $this->json([
-                'code' => Response::HTTP_CONFLICT,
-                'message' => 'User already exist.',
-            ]);
+            return new Response('User already exist.', Response::HTTP_CONFLICT);
         }
 
         $user = new User();

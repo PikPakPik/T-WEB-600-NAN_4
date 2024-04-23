@@ -24,11 +24,18 @@ class ProductFixtures extends Fixture
             $product->setDescription($description);
             $product->setPhoto($photo);
             $product->setPrice($price);
-
+            $product->setCategory($this->getReference('category_' . rand(0, 4)));
 
             $manager->persist($product);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+        return [
+            CategoryFixtures::class,
+        ];
     }
 }

@@ -4,28 +4,28 @@ namespace App\Repository;
 
 use App\DTO\PaginationDTO;
 use App\DTO\PaginatorDTO;
-use App\Entity\Product;
+use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * @extends ServiceEntityRepository<Product>
+ * @extends ServiceEntityRepository<Category>
  *
- * @method Product|null find($id, $lockMode = null, $lockVersion = null)
- * @method Product|null findOneBy(array $criteria, array $orderBy = null)
- * @method Product[]    findAll()
- * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Category|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Category|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Category[]    findAll()
+ * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProductRepository extends ServiceEntityRepository
+class CategoryRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry, private readonly SerializerInterface $serializer)
     {
-        parent::__construct($registry, Product::class);
+        parent::__construct($registry, Category::class);
     }
 
-    public function getProducts(PaginationDTO $paginationDTO): array
+    public function getCategories(PaginationDTO $paginationDTO): array
     {
         $qb = $this->createQueryBuilder('p')
             ->setFirstResult(($paginationDTO->getPage() - 1) * $paginationDTO->getLimit())
@@ -36,9 +36,8 @@ class ProductRepository extends ServiceEntityRepository
         $itemsSerialized = $this->serializer->serialize($items, 'json', [
             'json_encode_options' => 15,
             'groups' => [
-                'product:read',
-                'date:read',
-                'category:read'
+                'category:read',
+                'date:read'
             ]
         ]);
         $paginatorDto = new PaginatorDTO();

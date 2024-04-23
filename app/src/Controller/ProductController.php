@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\DTO\PaginationDTO;
 use App\DTO\ProductDTO;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -15,9 +17,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class ProductController extends AbstractController
 {
     #[Route('', name: 'api_get_products', methods: ['GET'], format: 'json')]
-    public function product(ProductRepository $productRepository): Response
+    public function product(ProductRepository $productRepository, #[MapQueryString] ?PaginationDTO $paginationDTO = new PaginationDTO()): Response
     {
-        $product = $productRepository->findAll();
+        $product = $productRepository->getProducts($paginationDTO);
         return $this->json(
             $product
         );
@@ -68,8 +70,6 @@ class ProductController extends AbstractController
         $entityManager->remove($product);
         $entityManager->flush();
 
-        return $this->json([
-            'message' => 'Product deleted successfully.',
-        ]);
+        return new Response(status: Response::HTTP_NO_CONTENT);
     }
 }
