@@ -29,43 +29,45 @@ class RegistrationController extends AbstractController
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): JsonResponse
     {
         $responseData = []; // Structure de la réponse JSON
+        $data = json_decode($request->getContent(), true);
 
         $user = new User();
+        $user->setLogin($data['login']);
+        $user->setPassword(password_hash($data['password'], PASSWORD_DEFAULT));
+        $user->setEmail($data['email']);
+        $user->setRoles(['ROLE_USER']);
+        if ($user->getEmail() && $user->getLogin()) {
+            $user->setVerified(false);
+        }
+        // On vérifie si l'utilisateur existe déjà
+        $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+        if ($existingUser) {
+            // On crée la réponse JSON avec un message d'erreur
+            $responseData['success'] = false;
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation(
-                'app_verify_email',
-                $user,
-                (new TemplatedEmail())
-                    ->from(new Address('rollandtsokeng@gmail.com', 'nan 4 BOT'))
-                    ->to($user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-
-            // On crée la réponse JSON avec un message de succès
-            $responseData['success'] = true;
-            $responseData['message'] = 'Registration successful. Please verify your email.';
-
-            // Vous pouvez ajouter d'autres données à la réponse si nécessaire
-
-            return new JsonResponse($responseData);
+        } elseif (!$user->getEmail() || !$user->getLogin()) {
+            $responseData['success'] = false;
+            $form = $this->createForm(RegistrationFormType::class, $user);
+            $form->handleRequest($request);
         }
+        else{
+        $this->emailVerifier->sendEmailConfirmation(
+            'app_verify_email',
+            $user,
+            (new TemplatedEmail())
+                ->from(new Address('rollandtsokeng@gmail.com', 'nan 4 BOT'))
+                ->to($user->getEmail())
+                ->subject('Please Confirm your Email')
+                ->htmlTemplate('registration/confirmation_email.html.twig')
+        );
+        $em = $this->$entityManager();
+        $em->persist($user);
+        $em->flush();
+        $responseData['message'] = 'Registration successful. Please verify your email.';
+        return $this->json(['message' => 'User created'], 201);
 
+    }
         // En cas d'erreur de validation du formulaire
         $responseData['success'] = false;
         // Ajoutez des messages d'erreur ou toute autre information utile à la réponse JSON

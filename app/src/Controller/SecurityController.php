@@ -4,29 +4,43 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
     #[Route(path: 'api/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils): JsonResponse
     {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('target_path');
-        }
+        $responseData = []; // Structure de la réponse JSON
 
+        if ($this->getUser()) {
+            // Si l'utilisateur est déjà connecté, vous pouvez renvoyer un message indiquant qu'il est déjà connecté
+            $responseData['message'] = 'User is already logged in.';
+            return new JsonResponse($responseData);
+        }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        // Si vous souhaitez également renvoyer des informations sur l'erreur de connexion ou le dernier nom d'utilisateur,
+        // vous pouvez les ajouter à la réponse JSON
+        $responseData['last_username'] = $lastUsername;
+        $responseData['error'] = $error ? $error->getMessage() : null;
+
+        return new JsonResponse($responseData);
     }
 
     #[Route(path: '/api/logout', name: 'app_logout')]
-    public function logout(): void
+    public function logout(): JsonResponse
     {
-        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+        $responseData = []; // Structure de la réponse JSON
+
+        // Vous pouvez ajouter un message indiquant que l'utilisateur a été déconnecté avec succès
+        $responseData['message'] = 'User logged out successfully.';
+
+        return new JsonResponse($responseData);
     }
 }
