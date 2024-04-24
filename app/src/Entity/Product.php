@@ -21,19 +21,19 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'cart:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'cart:read'])]
     private string $name;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'cart:read'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'cart:read'])]
     private ?string $photo = null;
 
     #[ORM\Column]
@@ -49,11 +49,11 @@ class Product
     private ?int $discountPrice = null;
 
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'cart:read'])]
     private ?bool $active = null;
 
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'cart:read'])]
     private ?int $stock = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]

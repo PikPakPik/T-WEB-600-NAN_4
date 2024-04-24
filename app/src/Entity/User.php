@@ -25,19 +25,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'cart:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'cart:read'])]
     private ?string $firstname = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'cart:read'])]
     private ?string $lastname = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'cart:read'])]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
@@ -45,7 +45,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /** @var string[] $roles */
     #[ORM\Column(type: Types::JSON)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'cart:read'])]
     private array $roles = [];
 
     /**

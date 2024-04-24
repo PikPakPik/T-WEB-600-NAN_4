@@ -8,8 +8,10 @@ use App\Trait\DtoHydratorTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: CartRepository::class)]
+#[ORM\Table(name: 'carts')]
 class Cart
 {
     use DateTimeImmutableTrait;
@@ -18,16 +20,19 @@ class Cart
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['cart:read'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['cart:read'])]
     private ?User $owner = null;
 
     /**
      * @var Collection<int, OrderProduct>
      */
     #[ORM\OneToMany(targetEntity: OrderProduct::class, mappedBy: 'cart')]
+    #[Groups(['cart:read'])]
     private Collection $products;
 
     public function __construct()

@@ -12,7 +12,7 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $firstName = $faker->firstName();
             $lastName = $faker->lastName();
             $user = new User();
@@ -28,6 +28,8 @@ class UserFixtures extends Fixture
                     ])
                 ]
             );
+            $this->setReference('user_' . $i, $user);
+
             $manager->persist($user);
         }
 
