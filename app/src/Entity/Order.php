@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\OrderRepository;
 use App\Trait\DateTimeImmutableTrait;
 use App\Trait\DtoHydratorTrait;
+use Doctrine\Common\Annotations\Annotation\Enum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,6 +29,7 @@ class Order
     private Collection $products;
 
     #[ORM\Column(length: 255)]
+    #[Enum(values: ['pending', 'completed', 'cancelled'])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
