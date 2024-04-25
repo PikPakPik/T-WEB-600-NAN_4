@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\DTO\CartDTO;
 use App\DTO\UpdateUserDTO;
+use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Repository\CartRepository;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,6 +50,18 @@ class CartController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
+        if (!$product->isActive()) {
+            return $this->json([
+                'message' => 'Product is not active'
+            ], 400);
+        }
+
+        if ($product->getStock() < $cartDTO->getQuantity()) {
+            return $this->json([
+                'message' => 'Not enough quantity'
+            ], 400);
+        }
+
         $cart = $cartRepository->findOneBy(['owner' => $user]);
 
         $orderProduct = $cart->getProducts()->filter(function (OrderProduct $orderProduct) use ($product) {
@@ -55,7 +69,13 @@ class CartController extends AbstractController
         })->first();
 
         if ($orderProduct) {
+            if ($product->getStock() < $orderProduct->getQuantity() + $cartDTO->getQuantity()) {
+                return $this->json([
+                    'message' => 'Not enough quantity'
+                ], 400);
+            }
             $orderProduct->setQuantity($orderProduct->getQuantity() + $cartDTO->getQuantity());
+            $orderProduct->setBuyPrice($product->getPrice());
 
             $entityManager->persist($orderProduct);
             $entityManager->flush();
@@ -70,9 +90,15 @@ class CartController extends AbstractController
                 ]
             );
         } else {
+            if ($product->getStock() < $cartDTO->getQuantity()) {
+                return $this->json([
+                    'message' => 'Not enough quantity'
+                ], 400);
+            }
             $orderProduct = new OrderProduct();
             $orderProduct->setProduct($product);
             $orderProduct->setQuantity($cartDTO->getQuantity());
+            $orderProduct->setBuyPrice($product->getPrice());
             $orderProduct->setCart($cart);
 
             $cart->addProduct($orderProduct);
@@ -108,7 +134,20 @@ class CartController extends AbstractController
             return $orderProduct->getProduct()->getId() === $product->getId();
         })->first();
 
+        if (!$orderProduct) {
+            return $this->json(
+                $cart,
+                context: [
+                    'groups' => [
+                        'cart:read',
+                        'date:read',
+                    ]
+                ]
+            );
+        }
+
         $orderProduct->setQuantity($cartDTO->getQuantity());
+        $orderProduct->setBuyPrice($product->getPrice());
 
         $entityManager->persist($orderProduct);
         $entityManager->flush();
@@ -118,6 +157,64 @@ class CartController extends AbstractController
             context: [
                 'groups' => [
                     'cart:read',
+                    'date:read',
+                ]
+            ]
+        );
+    }
+
+    #[Route('/validate', name: 'app_validate_cart', methods: ['POST'], format: 'json')]
+    public function validateCart(
+        CartRepository $cartRepository,
+        EntityManagerInterface $entityManager,
+        OrderRepository $orderRepository
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $cart = $cartRepository->findOneBy(['owner' => $user]);
+
+        if ($cart->getProducts()->isEmpty()) {
+            return $this->json([
+                'message' => 'Cart is empty'
+            ], 400);
+        }
+
+        $order = $orderRepository->findOneBy(['owner' => $user, 'status' => 'pending']);
+
+        if (!$order) {
+            $order = new Order();
+            $order->setOwner($user);
+            $order->setStatus('pending');
+
+            $entityManager->persist($order);
+            $entityManager->flush();
+        }
+
+        $total = 0;
+        foreach ($cart->getProducts() as $orderProduct) {
+            $total += $orderProduct->getBuyPrice() * $orderProduct->getQuantity();
+            $orderProduct->setOrderId($order);
+            $order->addProduct($orderProduct);
+
+            $entityManager->persist($orderProduct);
+        }
+
+        $order->setTotalPrice($total);
+
+        $entityManager->persist($order);
+        $entityManager->flush();
+
+        $cart->getProducts()->clear();
+
+        $entityManager->persist($cart);
+        $entityManager->flush();
+
+        return $this->json(
+            $order,
+            context: [
+                'groups' => [
+                    'order:read',
                     'date:read',
                 ]
             ]
