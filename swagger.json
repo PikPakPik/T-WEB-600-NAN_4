@@ -13,66 +13,123 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "host": "petstore.swagger.io",
-    "basePath": "/v2",
+    "host": "localhost",
+    "basePath": "/api",
     "tags": [
         {
-            "name": "pet",
-            "description": "Everything about your Pets",
-            "externalDocs": {
-                "description": "Find out more",
-                "url": "http://swagger.io"
-            }
+            "name": "auth",
+            "description": "Tout à propos de l'authentification"
         },
         {
-            "name": "store",
-            "description": "Access to Petstore orders"
+            "name": "users",
+            "description": "Opération à propos de l'utilisateur"
         },
         {
-            "name": "user",
-            "description": "Operations about user",
-            "externalDocs": {
-                "description": "Find out more about our store",
-                "url": "http://swagger.io"
-            }
+            "name": "products",
+            "description": "Opération à propos des produits"
+        },
+        {
+            "name": "carts"
+        },
+        {
+            "name": "orders"
         }
     ],
     "paths": {
-        "/pet/{petId}/uploadImage": {
+        "/login": {
             "post": {
-                "tags": ["pet"],
-                "summary": "uploads an image",
+                "tags": ["auth"],
+                "summary": "Authentification d'un utilisateur",
                 "description": "",
-                "operationId": "uploadFile",
-                "consumes": ["multipart/form-data"],
+                "consumes": ["application/json"],
                 "produces": ["application/json"],
                 "parameters": [
                     {
-                        "name": "petId",
-                        "in": "path",
-                        "description": "ID of pet to update",
+                        "in": "body",
+                        "name": "body",
+                        "description": "Les informations de connexion",
                         "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "name": "additionalMetadata",
-                        "in": "formData",
-                        "description": "Additional data to pass to server",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "name": "file",
-                        "in": "formData",
-                        "description": "file to upload",
-                        "required": false,
-                        "type": "file"
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "format": "email"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "format": "password"
+                                }
+                            },
+                            "required": ["email", "password"]
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/LoginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid username/password supplied",
+                        "schema": {
+                            "$ref": "#/definitions/ApiResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": ["auth"],
+                "summary": "Création d'un utilisateur",
+                "description": "",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Les informations de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Register"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid username/password supplied",
+                        "schema": {
+                            "$ref": "#/definitions/ApiResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": ["users"],
+                "summary": "Réccupère les informations de l'utilisateur",
+                "description": "",
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/ApiResponse"
                         }
@@ -80,7 +137,49 @@
                 },
                 "security": [
                     {
-                        "petstore_auth": ["write:pets", "read:pets"]
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": ["users"],
+                "summary": "Mise à jour des informations de l'utilisateur",
+                "description": "",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Les informations de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "firstname": { "type": "string" },
+                                "lastname": { "type": "string" },
+                                "email": { "type": "string", "format": "email" }
+                            },
+                            "required": ["firstname", "lastname", "email"]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/ApiResponse"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
                     }
                 ]
             }
@@ -711,31 +810,28 @@
         }
     },
     "securityDefinitions": {
-        "api_key": {
+        "bearerAuth": {
             "type": "apiKey",
-            "name": "api_key",
-            "in": "header"
-        },
-        "petstore_auth": {
-            "type": "oauth2",
-            "authorizationUrl": "https://petstore.swagger.io/oauth/authorize",
-            "flow": "implicit",
-            "scopes": {
-                "read:pets": "read your pets",
-                "write:pets": "modify pets in your account"
-            }
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+            "name": "Authorization"
         }
     },
     "definitions": {
+        "LoginResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
         "ApiResponse": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer",
                     "format": "int32"
-                },
-                "type": {
-                    "type": "string"
                 },
                 "message": {
                     "type": "string"
@@ -755,6 +851,42 @@
             },
             "xml": {
                 "name": "Category"
+            }
+        },
+        "Login": {
+            "type": "object",
+            "required": ["login", "password"],
+            "properties": {
+                "login": {
+                    "type": "string",
+                    "example": "user@mail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password"
+                }
+            }
+        },
+        "Register": {
+            "type": "object",
+            "required": ["firstname", "lastname", "email", "password"],
+            "properties": {
+                "firstname": {
+                    "type": "string",
+                    "example": "John"
+                },
+                "lastname": {
+                    "type": "string",
+                    "example": "Doe"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "johndoe@epitech.eu"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password"
+                }
             }
         },
         "Pet": {
@@ -860,9 +992,6 @@
                     "type": "integer",
                     "format": "int64"
                 },
-                "username": {
-                    "type": "string"
-                },
                 "firstName": {
                     "type": "string"
                 },
@@ -872,25 +1001,24 @@
                 "email": {
                     "type": "string"
                 },
-                "password": {
-                    "type": "string"
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 },
-                "phone": {
-                    "type": "string"
+                "createdAt": {
+                    "type": "string",
+                    "format": "date-time"
                 },
-                "userStatus": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "User Status"
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date-time"
                 }
             },
             "xml": {
                 "name": "User"
             }
         }
-    },
-    "externalDocs": {
-        "description": "Find out more about Swagger",
-        "url": "http://swagger.io"
     }
 }
