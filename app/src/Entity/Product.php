@@ -21,32 +21,33 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read', 'cart:read'])]
+    #[Groups(['product:read', 'cart:read', 'order:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['product:read', 'cart:read'])]
+    #[Groups(['product:read', 'cart:read', 'order:read'])]
     private string $name;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:read', 'cart:read'])]
+    #[Groups(['product:read', 'cart:read', 'order:read'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:read', 'cart:read'])]
+    #[Groups(['product:read', 'cart:read', 'order:read'])]
     private ?string $photo = null;
 
     #[ORM\Column]
-    #[Groups(['product:read'])]
+    #[Groups(['product:read', 'order:read'])]
     private ?float $price = null;
 
     #[ORM\Column]
     #[Groups(['product:read'])]
-    private ?int $discount = null;
+
+    private ?int $discount = 0;
 
     #[ORM\Column]
     #[Groups(['product:read'])]
-    private ?int $discountPrice = null;
+    private ?int $discountPrice = 0;
 
     #[ORM\Column]
     #[Groups(['product:read', 'cart:read'])]

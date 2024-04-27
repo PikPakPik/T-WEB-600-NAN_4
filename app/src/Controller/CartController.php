@@ -40,6 +40,65 @@ class CartController extends AbstractController
         );
     }
 
+    #[Route('/validate', name: 'app_validate_cart', methods: ['POST'])]
+    public function validateCart(
+        CartRepository $cartRepository,
+        EntityManagerInterface $entityManager,
+        OrderRepository $orderRepository
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $cart = $cartRepository->findOneBy(['owner' => $user]);
+
+        if ($cart->getProducts()->isEmpty()) {
+            return $this->json([
+                'message' => 'Cart is empty'
+            ], 400);
+        }
+
+        $order = $orderRepository->findOneBy(['owner' => $user, 'status' => 'pending']);
+
+        if (!$order) {
+            $order = new Order();
+            $order->setOwner($user);
+            $order->setStatus('pending');
+            $order->setTotalPrice(0);
+
+            $entityManager->persist($order);
+            $entityManager->flush();
+        }
+
+        $total = 0;
+        foreach ($cart->getProducts() as $orderProduct) {
+            $total += $orderProduct->getBuyPrice() * $orderProduct->getQuantity();
+            $orderProduct->setOrderId($order);
+            $order->addProduct($orderProduct);
+
+            $entityManager->persist($orderProduct);
+        }
+
+        $order->setTotalPrice($total);
+
+        $entityManager->persist($order);
+        $entityManager->flush();
+
+        $cart->getProducts()->clear();
+
+        $entityManager->persist($cart);
+        $entityManager->flush();
+
+        return $this->json(
+            $order,
+            context: [
+                'groups' => [
+                    'order:read',
+                    'date:read'
+                ]
+            ]
+        );
+    }
+
     #[Route('/{id}', name: 'app_add_product_to_cart', methods: ['POST'], format: 'json')]
     public function addProductToCart(
         #[MapRequestPayload] CartDTO $cartDTO,
@@ -157,64 +216,6 @@ class CartController extends AbstractController
             context: [
                 'groups' => [
                     'cart:read',
-                    'date:read',
-                ]
-            ]
-        );
-    }
-
-    #[Route('/validate', name: 'app_validate_cart', methods: ['POST'], format: 'json')]
-    public function validateCart(
-        CartRepository $cartRepository,
-        EntityManagerInterface $entityManager,
-        OrderRepository $orderRepository
-    ): Response {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        $cart = $cartRepository->findOneBy(['owner' => $user]);
-
-        if ($cart->getProducts()->isEmpty()) {
-            return $this->json([
-                'message' => 'Cart is empty'
-            ], 400);
-        }
-
-        $order = $orderRepository->findOneBy(['owner' => $user, 'status' => 'pending']);
-
-        if (!$order) {
-            $order = new Order();
-            $order->setOwner($user);
-            $order->setStatus('pending');
-
-            $entityManager->persist($order);
-            $entityManager->flush();
-        }
-
-        $total = 0;
-        foreach ($cart->getProducts() as $orderProduct) {
-            $total += $orderProduct->getBuyPrice() * $orderProduct->getQuantity();
-            $orderProduct->setOrderId($order);
-            $order->addProduct($orderProduct);
-
-            $entityManager->persist($orderProduct);
-        }
-
-        $order->setTotalPrice($total);
-
-        $entityManager->persist($order);
-        $entityManager->flush();
-
-        $cart->getProducts()->clear();
-
-        $entityManager->persist($cart);
-        $entityManager->flush();
-
-        return $this->json(
-            $order,
-            context: [
-                'groups' => [
-                    'order:read',
                     'date:read',
                 ]
             ]

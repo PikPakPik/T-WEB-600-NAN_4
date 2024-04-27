@@ -184,6 +184,74 @@
                 ]
             }
         },
+        "/products": {
+            "get": {
+                "tags": ["products"],
+                "summary": "Récupère la liste des produits",
+                "description": "",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Le nombre de produits à récupérer",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "La page à récupérer",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Product"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["products"],
+                "summary": "Ajoute un produit",
+                "description": "",
+                "consumes": ["application/json"],
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Les informations du produit",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/ProductDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/pet": {
             "post": {
                 "tags": ["pet"],
@@ -886,6 +954,46 @@
                 "password": {
                     "type": "string",
                     "example": "password"
+                }
+            }
+        },
+        "ProductDTO": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "photo": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "float"
+                }
+            },
+            "required": ["name", "price"]
+        },
+        "Product": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "photo": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "float"
                 }
             }
         },

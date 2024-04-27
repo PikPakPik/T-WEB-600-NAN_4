@@ -9,6 +9,7 @@ use Doctrine\Common\Annotations\Annotation\Enum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`orders`')]
@@ -20,23 +21,28 @@ class Order
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['order:read'])]
     private ?int $id = null;
+
+    #[ORM\Column]
+    #[Groups(['order:read'])]
+    private ?float $totalPrice = null;
 
     /**
      * @var Collection<int, OrderProduct>
      */
     #[ORM\OneToMany(targetEntity: OrderProduct::class, mappedBy: 'orderId')]
+    #[Groups(['order:read'])]
     private Collection $products;
 
     #[ORM\Column(length: 255)]
     #[Enum(values: ['pending', 'completed', 'cancelled'])]
+    #[Groups(['order:read'])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?User $owner = null;
 
-    #[ORM\Column]
-    private ?float $totalPrice = null;
 
     public function __construct()
     {
@@ -104,7 +110,7 @@ class Order
 
     public function getTotalPrice(): ?float
     {
-        return $this->totalPrice;
+        return round($this->totalPrice, 2);
     }
 
     public function setTotalPrice(float $totalPrice): static

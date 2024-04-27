@@ -18,16 +18,15 @@ class OrderProduct
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['cart:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'orderProducts')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart:read', 'order:read'])]
     private ?Product $product = null;
 
     #[ORM\Column]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart:read', 'order:read'])]
     private ?int $quantity = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
@@ -37,7 +36,7 @@ class OrderProduct
     private ?Order $orderId = null;
 
     #[ORM\Column]
-    #[Groups(['cart:read'])]
+    #[Groups(['cart:read', 'order:read'])]
     private ?float $buyPrice = null;
 
     public function getId(): ?int
