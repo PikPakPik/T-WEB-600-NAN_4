@@ -90,4 +90,19 @@ class CategoryController extends AbstractController
 
         return new Response(status: Response::HTTP_NO_CONTENT);
     }
+
+    #[Route('/{id}/products', name: 'api_get_category_products', methods: ['GET'], format: 'json')]
+    public function getProducts(Category $category): Response
+    {
+        return $this->json(
+            $category->getProducts(),
+            context: [
+                'groups' => [
+                    'product:read',
+                    'category:read',
+                    'date:read',
+                ]
+            ]
+        );
+    }
 }
