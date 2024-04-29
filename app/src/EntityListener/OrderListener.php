@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\EntityListener;
 
 use App\Entity\Order;
@@ -13,7 +11,6 @@ use Doctrine\ORM\Events;
 #[AsEntityListener(event: Events::preUpdate, method: 'onPreUpdate', entity: Order::class)]
 readonly class OrderListener
 {
-
     /**
      * @param Order $order
      * @return void

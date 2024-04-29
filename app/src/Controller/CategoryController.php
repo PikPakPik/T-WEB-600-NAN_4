@@ -17,8 +17,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class CategoryController extends AbstractController
 {
     #[Route('', name: 'api_get_categories', methods: ['GET'], format: 'json')]
-    public function category(CategoryRepository $categoryRepository, #[MapQueryString] ?PaginationDTO $paginationDTO = new PaginationDTO()): Response
-    {
+    public function category(
+        CategoryRepository $categoryRepository,
+        #[MapQueryString] ?PaginationDTO $paginationDTO = new PaginationDTO()
+    ): Response {
         $category = $categoryRepository->getCategories($paginationDTO);
         return $this->json(
             $category

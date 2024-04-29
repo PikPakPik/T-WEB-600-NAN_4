@@ -17,8 +17,10 @@ use Symfony\Component\Routing\Attribute\Route;
 class ProductController extends AbstractController
 {
     #[Route('', name: 'api_get_products', methods: ['GET'], format: 'json')]
-    public function product(ProductRepository $productRepository, #[MapQueryString] ?PaginationDTO $paginationDTO = new PaginationDTO()): Response
-    {
+    public function product(
+        ProductRepository $productRepository,
+        #[MapQueryString] ?PaginationDTO $paginationDTO = new PaginationDTO()
+    ): Response {
         $product = $productRepository->getProducts($paginationDTO);
         return $this->json(
             $product

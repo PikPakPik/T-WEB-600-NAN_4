@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\EntityListener;
 
 use App\Entity\Cart;
@@ -14,7 +12,6 @@ use Doctrine\ORM\Events;
 #[AsEntityListener(event: Events::preUpdate, method: 'onPreUpdate', entity: Cart::class)]
 readonly class CartListener
 {
-
     /**
      * @param Cart $cart
      * @return void

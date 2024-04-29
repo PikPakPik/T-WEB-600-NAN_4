@@ -1,7 +1,5 @@
 <?php
 
-
-
 namespace App\EntityListener;
 
 use App\Entity\Category;
@@ -13,7 +11,6 @@ use Doctrine\ORM\Events;
 #[AsEntityListener(event: Events::preUpdate, method: 'onPreUpdate', entity: Category::class)]
 readonly class CategoryListener
 {
-
     /**
      * @param Category $category
      * @return void

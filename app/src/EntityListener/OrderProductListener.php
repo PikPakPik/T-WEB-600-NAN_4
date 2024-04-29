@@ -11,7 +11,6 @@ use Doctrine\ORM\Events;
 #[AsEntityListener(event: Events::preUpdate, method: 'onPreUpdate', entity: OrderProduct::class)]
 readonly class OrderProductListener
 {
-
     /**
      * @param OrderProduct $orderProduct
      * @return void
