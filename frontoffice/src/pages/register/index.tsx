@@ -1,6 +1,63 @@
 import { Box, Button, Link, TextField, Typography } from '@mui/material'
+import { FormEvent, useState } from 'react'
+import Swal from 'sweetalert2'
 
 const RegisterPage = () => {
+    const API_URL = process.env.API_URL
+    const [username, setUsername] = useState('')
+    const [firstName, setFirstName] = useState('')
+    const [familyName, setFamilyName] = useState('')
+    const [email, setEmail] = useState('')
+    const [reenterEmail, setReenterEmail] = useState('')
+    const [address, setAddress] = useState('')
+    const [state, setState] = useState('')
+    const [city, setCity] = useState('')
+    const [zipCode, setZipCode] = useState('')
+    const [country, setCountry] = useState('')
+    const [phoneNumber, setPhoneNumber] = useState('')
+    const [password, setPassword] = useState('')
+    const [reenterPassword, setReenterPassword] = useState('')
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault()
+        // Construct the body data
+        const formData = {
+            firstname: firstName,
+            lastname: familyName,
+            email: email,
+            password: password,
+        }
+
+        try {
+            const response = await fetch(`${API_URL}/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+
+            if (response.ok) {
+                Swal.fire({
+                    title: 'Registration successful',
+                    text: 'You can now login to your account.',
+                    icon: 'success',
+                    confirmButtonText: 'Login',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/login'
+                    }
+                })
+
+                console.log('Registration successful')
+            } else {
+                console.error('Registration failed:', response.statusText)
+            }
+        } catch (error) {
+            console.error('Error:', error)
+        }
+    }
+
     return (
         <>
             <Box
@@ -38,15 +95,15 @@ const RegisterPage = () => {
                 >
                     Register
                 </Typography>
-                <Box
-                    component="form"
-                    sx={{
+                <form
+                    onSubmit={handleSubmit}
+                    style={{
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 2,
 
                         margin: 'auto',
-                        mt: 4,
+                        marginTop: 4,
                     }}
                 >
                     <TextField
@@ -72,6 +129,8 @@ const RegisterPage = () => {
                                 },
                             },
                         }}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                     <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
                         <TextField
@@ -96,6 +155,8 @@ const RegisterPage = () => {
                                     },
                                 },
                             }}
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
                         />
                         <TextField
                             label="Family Name"
@@ -119,6 +180,8 @@ const RegisterPage = () => {
                                     },
                                 },
                             }}
+                            value={familyName}
+                            onChange={(e) => setFamilyName(e.target.value)}
                         />
                     </Box>
 
@@ -144,6 +207,8 @@ const RegisterPage = () => {
                                 },
                             },
                         }}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
                         label="Re-enter Email"
@@ -167,6 +232,8 @@ const RegisterPage = () => {
                                 },
                             },
                         }}
+                        value={reenterEmail}
+                        onChange={(e) => setReenterEmail(e.target.value)}
                     />
 
                     <TextField
@@ -191,6 +258,8 @@ const RegisterPage = () => {
                                 },
                             },
                         }}
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
                     />
                     <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
                         <TextField
@@ -215,6 +284,8 @@ const RegisterPage = () => {
                                     },
                                 },
                             }}
+                            value={state}
+                            onChange={(e) => setState(e.target.value)}
                         />
                         <TextField
                             label="City"
@@ -238,6 +309,8 @@ const RegisterPage = () => {
                                     },
                                 },
                             }}
+                            value={city}
+                            onChange={(e) => setCity(e.target.value)}
                         />
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
@@ -263,6 +336,8 @@ const RegisterPage = () => {
                                     },
                                 },
                             }}
+                            value={zipCode}
+                            onChange={(e) => setZipCode(e.target.value)}
                         />
                         <TextField
                             label="Country"
@@ -286,6 +361,8 @@ const RegisterPage = () => {
                                     },
                                 },
                             }}
+                            value={country}
+                            onChange={(e) => setCountry(e.target.value)}
                         />
                     </Box>
 
@@ -311,6 +388,8 @@ const RegisterPage = () => {
                                 },
                             },
                         }}
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                     <TextField
                         label="Password"
@@ -334,6 +413,8 @@ const RegisterPage = () => {
                                 },
                             },
                         }}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <TextField
                         label="Re-enter Password"
@@ -357,6 +438,8 @@ const RegisterPage = () => {
                                 },
                             },
                         }}
+                        value={reenterPassword}
+                        onChange={(e) => setReenterPassword(e.target.value)}
                     />
                     <Box
                         sx={{
@@ -367,7 +450,6 @@ const RegisterPage = () => {
                         }}
                     >
                         <Button
-                            variant="contained"
                             style={{
                                 backgroundColor: '#136207',
                                 color: 'white',
@@ -381,7 +463,7 @@ const RegisterPage = () => {
                             Already have an account? <Link href="/login">Login</Link>
                         </Typography>
                     </Box>
-                </Box>
+                </form>
             </Box>
         </>
     )
