@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box, Slider, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import categories from '@/common/fakeData/categories.json'
@@ -10,6 +10,11 @@ const CategoryPage = () => {
     const [currentCategory, setCurrentCategory] = useState<Category | null>(null)
     const [productsOfCat, setProductsOfCat] = useState<Product[]>([])
     const { id } = useParams()
+    const [priceRange, setPriceRange] = useState<number[]>([20, 37])
+
+    const handleChange = (event: Event, newPriceRange: number | number[]) => {
+        setPriceRange(newPriceRange as number[])
+    }
 
     useEffect(() => {
         const foundCategory = id && categories.find((category) => category.id === Number(id))
@@ -90,6 +95,13 @@ const CategoryPage = () => {
                         }}
                     >
                         <Typography variant="h5">Price</Typography>
+                        <Slider
+                            getAriaLabel={() => 'Temperature range'}
+                            value={priceRange}
+                            onChange={handleChange}
+                            valueLabelDisplay="auto"
+                            getAriaValueText={priceRange,""}
+                        />
                         <Typography variant="h5">Brand</Typography>
                         <Typography variant="h5">Discount</Typography>
                     </Box>
