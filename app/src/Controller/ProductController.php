@@ -29,7 +29,14 @@ class ProductController extends AbstractController
     public function getProduct(Product $product): Response
     {
         return $this->json(
-            $product
+            $product,
+            context: [
+                'groups' => [
+                    'product:read',
+                    'date:read',
+                    "category:read",
+                ]
+            ]
         );
     }
 
