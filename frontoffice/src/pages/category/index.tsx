@@ -1,32 +1,34 @@
 import { Box, Slider, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import categories from '@/common/fakeData/categories.json'
-import products from '@/common/fakeData/products.json'
 import { Category } from '@/common/types/Category'
 import { Product } from '@/common/types/Product'
 
-const CategoryPage = () => {
-    const [currentCategory, setCurrentCategory] = useState<Category | null>(null)
-    const [productsOfCat, setProductsOfCat] = useState<Product[]>([])
+const CategoryPage = (props: Category) => {
+    const [products, setProducts] = useState<Product[]>([])
     const { id } = useParams()
-    const [priceRange, setPriceRange] = useState<number[]>([20, 37])
+    const [priceRange, setPriceRange] = useState<number[]>([0, 37])
+    const [isPoductsLoading, setIsPoductsLoading] = useState<boolean>(false)
 
     const handleChange = (event: Event, newPriceRange: number | number[]) => {
         setPriceRange(newPriceRange as number[])
     }
-
-    useEffect(() => {
-        const foundCategory = id && categories.find((category) => category.id === Number(id))
-        if (foundCategory) {
-            setCurrentCategory(foundCategory)
-            const filteredProducts = products.products.filter(
-                (product) => product.category_id === foundCategory.id
-            )
-            if (filteredProducts) {
-                setProductsOfCat(filteredProducts)
+    const priceRangetext = (value: number)=>{
+        return `${value}€`
+    }
+    const fetchProducts = async () => {
+        try {
+            const response = await fetch(`${process.env.API_URL}/categories/${id}/products`)
+            const data = await response.json()
+            if (response.ok) {
+                setProducts(data)
+            } else {
+                console.error(data.message)
             }
-        }
+        } catch (error) {}
+    }
+    useEffect(() => {
+        fetchProducts()
     }, [id])
 
     return (
@@ -46,7 +48,9 @@ const CategoryPage = () => {
                         height: '100%',
                         objectFit: 'cover',
                     }}
-                    src={currentCategory ? currentCategory.image : ''}
+                    src={
+                        'https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg'
+                    } // change this from
                 />
 
                 <Box
@@ -68,7 +72,7 @@ const CategoryPage = () => {
                             fontWeight: '700',
                         }}
                     >
-                        {currentCategory && currentCategory.name}
+                        {props.name}
                     </Typography>
                 </Box>
             </Box>
@@ -100,7 +104,7 @@ const CategoryPage = () => {
                             value={priceRange}
                             onChange={handleChange}
                             valueLabelDisplay="auto"
-                            getAriaValueText={priceRange,""}
+                            getAriaValueText={priceRangetext}
                         />
                         <Typography variant="h5">Brand</Typography>
                         <Typography variant="h5">Discount</Typography>
@@ -115,7 +119,7 @@ const CategoryPage = () => {
                             padding: '1rem',
                         }}
                     >
-                        {productsOfCat.map((product) => (
+                        {products.map((product) => (
                             <Box
                                 key={product.id}
                                 sx={{
