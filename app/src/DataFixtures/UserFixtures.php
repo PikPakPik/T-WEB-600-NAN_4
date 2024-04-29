@@ -33,6 +33,21 @@ class UserFixtures extends Fixture
             $manager->persist($user);
         }
 
+        $devadmin = new User();
+        $devadmin->setFirstname('devadmin');
+        $devadmin->setLastname('devadmin');
+        $devadmin->setEmail('devadmin@epitech.eu');
+        $devadmin->setPassword("Ep1t3ch@admin");
+        $devadmin->setRoles(['ROLE_ADMIN']);
+        $manager->persist($devadmin);
+
+        $devuser = new User();
+        $devuser->setFirstname('devuser');
+        $devuser->setLastname('devuser');
+        $devuser->setEmail('devuser@epitech.eu');
+        $devuser->setPassword("Ep1t3ch@user");
+
+
         $manager->flush();
     }
 }

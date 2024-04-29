@@ -25,6 +25,10 @@
             "description": "Opération à propos de l'utilisateur"
         },
         {
+            "name": "categories",
+            "description": "Opération à propos des catégories"
+        },
+        {
             "name": "products",
             "description": "Opération à propos des produits"
         },
