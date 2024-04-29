@@ -20,7 +20,23 @@ const RegisterPage = () => {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
-        // Construct the body data
+        if (email !== reenterEmail) {
+            Swal.fire({
+                title: 'Emails do not match',
+                icon: 'error',
+                text: 'Please enter matching emails.',
+            })
+            return
+        }
+
+        if (password !== reenterPassword) {
+            Swal.fire({
+                title: 'Passwords do not match',
+                icon: 'error',
+                text: 'Please enter matching passwords.',
+            })
+            return
+        }
         const formData = {
             firstname: firstName,
             lastname: familyName,
@@ -29,6 +45,16 @@ const RegisterPage = () => {
         }
 
         try {
+            Swal.fire({
+                title: 'Processing',
+                html: 'Please wait...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading()
+                },
+            })
             const response = await fetch(`${API_URL}/register`, {
                 method: 'POST',
                 headers: {
@@ -38,6 +64,7 @@ const RegisterPage = () => {
             })
 
             if (response.ok) {
+                Swal.close()
                 Swal.fire({
                     title: 'Registration successful',
                     text: 'You can now login to your account.',
@@ -48,10 +75,14 @@ const RegisterPage = () => {
                         window.location.href = '/login'
                     }
                 })
-
-                console.log('Registration successful')
             } else {
-                console.error('Registration failed:', response.statusText)
+                Swal.close()
+                Swal.fire({
+                    title: 'Registration failed',
+                    text: 'This account is already registered. Please try again. or contact us',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                })
             }
         } catch (error) {
             console.error('Error:', error)
