@@ -51,6 +51,14 @@ const Homepage = () => {
     useEffect(() => {
         fetchCategories()
     }, [])
+    const handleCategoryClick = (category: Category) => {
+        navigate(`/category/${category.id}`, {
+            state: {
+                categoryName: category.name,
+                categoryImage: category.image,
+            },
+        })
+    }
 
     return (
         <>
@@ -232,7 +240,7 @@ const Homepage = () => {
                         {categories.map((category) => (
                             <SwiperSlide
                                 key={category.id}
-                                onClick={() => navigate(`/category/${category.id}`)}
+                                onClick={() => handleCategoryClick(category)}
                             >
                                 <CategoryCards
                                     id={category.id}

@@ -6,7 +6,7 @@ export interface Product {
     category_id: number
     price: number
     description: string
-    image: string
+    photo: string
     category: string
     stock: number
     onSale: boolean
