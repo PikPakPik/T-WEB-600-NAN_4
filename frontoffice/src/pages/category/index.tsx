@@ -1,11 +1,19 @@
-import { Box, Skeleton, Slider, Typography } from '@mui/material'
+import {
+    Box,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    Skeleton,
+    Slider,
+    Typography,
+} from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Category } from '@/common/types/Category'
 import { Product } from '@/common/types/Product'
 import { useLocation } from 'react-router-dom'
 
-const CategoryPage = (props: Category) => {
+const CategoryPage = () => {
     const location = useLocation()
     const { categoryName, categoryImage } = location.state || {}
     const [categoryNameState, setCategoryNameState] = useState(categoryName)
@@ -13,17 +21,59 @@ const CategoryPage = (props: Category) => {
     const [currentCategory, setCurrentCategory] = useState<Category>()
     const [products, setProducts] = useState<Product[]>([])
     const { id } = useParams()
-    const [priceRange, setPriceRange] = useState<number[]>([0, 37])
     const [isPoductsLoading, setIsPoductsLoading] = useState<boolean>(false)
     const [isCurrentCategoryLoading, setIsCurrentCategoryLoading] = useState<boolean>(false)
-    
+    const [maxPrice, setMaxPrice] = useState<number>(0)
+
+    const [sortingCriteria, setSortingCriteria] = useState<string>('')
+
+    const [priceRange, setPriceRange] = useState<number[]>([0, 0])
+
+    const [openDialog, setOpenDialog] = useState(false)
+
+    const handleDialogOpen = () => {
+        setOpenDialog(true)
+    }
+
+    const handleDialogClose = () => {
+        setOpenDialog(false)
+    }
 
     const handleChange = (event: Event, newPriceRange: number | number[]) => {
         setPriceRange(newPriceRange as number[])
+        event.preventDefault()
     }
-    const priceRangetext = (value: number) => {
+
+    const priceRangeText = (value: number) => {
         return `${value}€`
     }
+
+    const handleSortChange = (event: SelectChangeEvent<string>) => {
+        setSortingCriteria(event.target.value)
+    }
+
+    const filteredProducts = products.filter(
+        (product) => product.price >= priceRange[0] && product.price <= priceRange[1]
+    )
+
+    const sortedProducts = sortingCriteria
+        ? filteredProducts.slice().sort((a, b) => {
+              // Implement sorting logic based on the selected criteria
+              switch (sortingCriteria) {
+                  case 'A-Z':
+                      return a.name.localeCompare(b.name)
+                  case 'Z-A':
+                      return b.name.localeCompare(a.name)
+                  case 'Price ↓':
+                      return a.price - b.price
+                  case 'Price ↑':
+                      return b.price - a.price
+                  default:
+                      return 0
+              }
+          })
+        : filteredProducts
+
     const fetchCategory = async () => {
         try {
             setIsCurrentCategoryLoading(true)
@@ -51,6 +101,10 @@ const CategoryPage = (props: Category) => {
             const data = await response.json()
             if (response.ok) {
                 setProducts(data)
+                const maxPrice = Math.max(...data.map((product: Product) => product.price))
+
+                setPriceRange([0, maxPrice])
+                setMaxPrice(maxPrice)
                 setIsPoductsLoading(false)
             } else {
                 console.error(data.message)
@@ -122,15 +176,14 @@ const CategoryPage = (props: Category) => {
                 </Box>
             )}
 
-            <Box sx={{ padding: '1rem' }}>
-                <Typography variant="body1">Bread crumbs → Bread crumbs</Typography>
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: { sx: 'column', md: 'row' } }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' } }}>
                 <Box
                     sx={{
-                        width: { sx: '100%', md: '25%' },
-                        borderRight: { sx: 'none', md: '1px solid gray' },
-                        borderBottom: { sx: '1px solid gray', md: 'none' },
+                        width: { xs: '100%', md: '25%' },
+                        borderRight: { xs: 'none', md: '1px solid lightgray' },
+                        borderBottom: { xs: '1px solid lightgray', md: 'none' },
+                        display: 'flex',
+                        flexDirection: 'column',
                     }}
                 >
                     <Typography variant="h4" sx={{ padding: '1rem' }}>
@@ -138,22 +191,44 @@ const CategoryPage = (props: Category) => {
                     </Typography>
                     <Box
                         sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
+                            display: { xs: 'none', md: 'flex' },
+                            flexDirection: { xs: 'row', md: 'column' },
                             gap: '1rem',
                             padding: '1rem',
                         }}
                     >
-                        <Typography variant="h5">Price</Typography>
+                        <Typography variant="h5" sx={{ fontSize: { xs: '0.8rem', md: '1rem' } }}>
+                            Price range:
+                        </Typography>
                         <Slider
-                            getAriaLabel={() => 'Temperature range'}
+                            getAriaLabel={() => 'Price range'}
                             value={priceRange}
                             onChange={handleChange}
                             valueLabelDisplay="auto"
-                            getAriaValueText={priceRangetext}
+                            getAriaValueText={priceRangeText}
+                            max={maxPrice}
                         />
-                        <Typography variant="h5">Brand</Typography>
-                        <Typography variant="h5">Discount</Typography>
+
+                        <Typography variant="h5">Sort Product by:</Typography>
+                        <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={sortingCriteria}
+                            defaultValue="None"
+                            onChange={handleSortChange}
+                            sx={{
+                                width: '100%',
+                                padding: '0.5rem',
+                                borderRadius: '0.5rem',
+                                border: '1px solid lightgray',
+                            }}
+                        >
+                            <MenuItem value="None">None</MenuItem>
+                            <MenuItem value="A-Z">Alphabet A⇨Z</MenuItem>
+                            <MenuItem value="Z-A">Alphabet Z⇨A</MenuItem>
+                            <MenuItem value="Price ↑">Price ⇘</MenuItem>
+                            <MenuItem value="Price ↓">Price ⇗</MenuItem>
+                        </Select>
                     </Box>
                 </Box>
                 <Box>
@@ -212,7 +287,7 @@ const CategoryPage = (props: Category) => {
                                 padding: '1rem',
                             }}
                         >
-                            {products.map((product) => (
+                            {sortedProducts.map((product) => (
                                 <Box
                                     key={product.id}
                                     sx={{
