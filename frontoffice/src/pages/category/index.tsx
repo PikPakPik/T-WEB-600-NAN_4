@@ -1,17 +1,23 @@
 import {
     Box,
+    IconButton,
     MenuItem,
     Select,
     SelectChangeEvent,
     Skeleton,
     Slider,
     Typography,
+    Dialog,
+    DialogContent,
+    Button,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Category } from '@/common/types/Category'
 import { Product } from '@/common/types/Product'
 import { useLocation } from 'react-router-dom'
+import FilterListIcon from '@mui/icons-material/FilterList'
+import { Close } from '@mui/icons-material'
 
 const CategoryPage = () => {
     const location = useLocation()
@@ -24,11 +30,9 @@ const CategoryPage = () => {
     const [isPoductsLoading, setIsPoductsLoading] = useState<boolean>(false)
     const [isCurrentCategoryLoading, setIsCurrentCategoryLoading] = useState<boolean>(false)
     const [maxPrice, setMaxPrice] = useState<number>(0)
-
+    const [visibleProducts, setVisibleProducts] = useState(6)
     const [sortingCriteria, setSortingCriteria] = useState<string>('')
-
     const [priceRange, setPriceRange] = useState<number[]>([0, 0])
-
     const [openDialog, setOpenDialog] = useState(false)
 
     const handleDialogOpen = () => {
@@ -55,6 +59,9 @@ const CategoryPage = () => {
     const filteredProducts = products.filter(
         (product) => product.price >= priceRange[0] && product.price <= priceRange[1]
     )
+    const handleShowMore = () => {
+        setVisibleProducts((prev) => prev + 6)
+    }
 
     const sortedProducts = sortingCriteria
         ? filteredProducts.slice().sort((a, b) => {
@@ -100,8 +107,12 @@ const CategoryPage = () => {
             const response = await fetch(`${process.env.API_URL}/categories/${id}/products`)
             const data = await response.json()
             if (response.ok) {
-                setProducts(data)
-                const maxPrice = Math.max(...data.map((product: Product) => product.price))
+                const activeCategories = data.filter((product: Product) => product.active)
+
+                setProducts(activeCategories)
+                const maxPrice = Math.max(
+                    ...activeCategories.map((product: Product) => product.price)
+                )
 
                 setPriceRange([0, maxPrice])
                 setMaxPrice(maxPrice)
@@ -184,11 +195,86 @@ const CategoryPage = () => {
                         borderBottom: { xs: '1px solid lightgray', md: 'none' },
                         display: 'flex',
                         flexDirection: 'column',
+                        position: { xs: 'relative', md: 'sticky' },
+                        top: { xs: 'auto', md: '10vh' },
                     }}
                 >
-                    <Typography variant="h4" sx={{ padding: '1rem' }}>
-                        Filters:
-                    </Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Typography
+                            variant="h4"
+                            sx={{ padding: '1rem', fontSize: { xs: '1rem', md: '1.3rem' } }}
+                        >
+                            Filters:
+                        </Typography>
+                        <IconButton
+                            onClick={handleDialogOpen}
+                            sx={{ alignSelf: 'center', display: { xs: 'flex', md: 'none' } }}
+                        >
+                            <FilterListIcon />
+                        </IconButton>
+                    </Box>
+                    <Dialog fullWidth open={openDialog} onClose={handleDialogClose}>
+                        <DialogContent sx={{ height: '70vh' }}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    padding: '1rem',
+                                }}
+                            >
+                                <Typography variant="h4" sx={{ fontSize: '1.2rem' }}>
+                                    Filters:
+                                </Typography>
+                                <IconButton onClick={handleDialogClose}>
+                                    <Close />
+                                </IconButton>
+                            </Box>
+
+                            <Typography variant="h5" sx={{ fontSize: '1rem' }}>
+                                Price range:
+                            </Typography>
+                            <Slider
+                                sx={{ width: '95%', color: 'green' }}
+                                getAriaLabel={() => 'Price range'}
+                                value={priceRange}
+                                onChange={handleChange}
+                                valueLabelDisplay="auto"
+                                getAriaValueText={priceRangeText}
+                                max={maxPrice}
+                            />
+
+                            <Typography variant="h5" sx={{ fontSize: '1rem' }}>
+                                Sort Product by:
+                            </Typography>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={sortingCriteria}
+                                defaultValue="None"
+                                onChange={handleSortChange}
+                                sx={{
+                                    width: '100%',
+                                    padding: '0.5rem',
+                                    borderRadius: '0.5rem',
+                                    border: '1px solid lightgray',
+                                }}
+                            >
+                                <MenuItem value="None">None</MenuItem>
+                                <MenuItem value="A-Z">Alphabet A⇨Z</MenuItem>
+                                <MenuItem value="Z-A">Alphabet Z⇨A</MenuItem>
+                                <MenuItem value="Price ↑">Price ⇘</MenuItem>
+                                <MenuItem value="Price ↓">Price ⇗</MenuItem>
+                            </Select>
+                        </DialogContent>
+                    </Dialog>
                     <Box
                         sx={{
                             display: { xs: 'none', md: 'flex' },
@@ -197,7 +283,7 @@ const CategoryPage = () => {
                             padding: '1rem',
                         }}
                     >
-                        <Typography variant="h5" sx={{ fontSize: { xs: '0.8rem', md: '1rem' } }}>
+                        <Typography variant="h5" sx={{ fontSize: '1rem' }}>
                             Price range:
                         </Typography>
                         <Slider
@@ -207,9 +293,14 @@ const CategoryPage = () => {
                             valueLabelDisplay="auto"
                             getAriaValueText={priceRangeText}
                             max={maxPrice}
+                            sx={{
+                                color: 'green',
+                            }}
                         />
 
-                        <Typography variant="h5">Sort Product by:</Typography>
+                        <Typography variant="h5" sx={{ fontSize: '1rem' }}>
+                            Sort Product by:
+                        </Typography>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
@@ -236,7 +327,11 @@ const CategoryPage = () => {
                         <Box
                             sx={{
                                 display: 'grid',
-                                gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+                                gridTemplateColumns: {
+                                    xs: '1fr',
+                                    sm: 'repeat(2, 1fr)',
+                                    md: 'repeat(3, 1fr)',
+                                },
                                 gap: '1rem',
                                 padding: '1rem',
                             }}
@@ -282,12 +377,17 @@ const CategoryPage = () => {
                         <Box
                             sx={{
                                 display: 'grid',
-                                gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+
+                                gridTemplateColumns: {
+                                    xs: '1fr',
+                                    sm: 'repeat(2, 1fr)',
+                                    md: 'repeat(3, 1fr)',
+                                },
                                 gap: '1rem',
                                 padding: '1rem',
                             }}
                         >
-                            {sortedProducts.map((product) => (
+                            {sortedProducts.slice(0, visibleProducts).map((product) => (
                                 <Box
                                     key={product.id}
                                     sx={{
@@ -368,6 +468,23 @@ const CategoryPage = () => {
                                     </Typography>
                                 </Box>
                             ))}
+                        </Box>
+                    )}
+                    {visibleProducts < sortedProducts.length && (
+                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <Button
+                                variant="contained"
+                                onClick={handleShowMore}
+                                sx={{ fontSize: { xs: '1rem', md: '1.5rem' } }}
+                                style={{
+                                    backgroundColor: '#136207',
+                                    fontWeight: '700',
+                                    color: 'white',
+                                    margin: '1rem',
+                                }}
+                            >
+                                Show more
+                            </Button>
                         </Box>
                     )}
                 </Box>
