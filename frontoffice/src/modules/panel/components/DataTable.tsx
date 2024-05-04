@@ -2,6 +2,7 @@ import { CheckSharp } from '@mui/icons-material'
 import CloseIcon from '@mui/icons-material/Close'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
+import AddIcon from '@mui/icons-material/Add'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
@@ -180,11 +181,18 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     </Tooltip>
                 </>
             ) : (
-                <Tooltip title="Filter list">
-                    <IconButton>
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
+                <>
+                    <Tooltip title="Create new entry">
+                        <IconButton>
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Filter list">
+                        <IconButton>
+                            <FilterListIcon />
+                        </IconButton>
+                    </Tooltip>
+                </>
             )}
         </Toolbar>
     )
