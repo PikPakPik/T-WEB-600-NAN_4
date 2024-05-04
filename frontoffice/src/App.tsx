@@ -1,17 +1,22 @@
-// import { isAuthenticated } from "@/auth";
-import Homepage from '@/pages/home/index'
-import AboutPage from '@/pages/about'
-import TopBar from '@/common/Layout/TopBar'
-import LoginPage from '@/pages/login'
-import CategoryPage from '@/pages/category'
-import RegisterPage from '@/pages/register'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Footer from '@/common/Layout/Footer'
+import TopBar from '@/common/Layout/TopBar'
+import AboutPage from '@/pages/about'
+import CategoryPage from '@/pages/category'
+import Homepage from '@/pages/home/index'
+import LoginPage from '@/pages/login'
+import RegisterPage from '@/pages/register'
 import { Box } from '@mui/material'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { AuthProvider } from './auth'
+import ResponsiveDrawer from './common/Layout/panel/Layout'
+import { useAuth } from './common/hooks/useAuth'
+import HomePanel from './pages/panel'
+import ProductsTable from './pages/panel/products'
 
-// function ProtectedRoute({ children }: any) {
-// 	return isAuthenticated() ? children : <Navigate to='/sign-in' replace />;
-// }
+function ProtectedRoute({ children }: any) {
+    const auth = useAuth()
+    return auth.isAuthenticated && auth.isAdmin ? children : <Navigate to="/login" replace />
+}
 
 function App() {
     return (
@@ -25,21 +30,95 @@ function App() {
                     backgroundColor: '#EEF4ED',
                 }}
             >
-                <TopBar />
-                <Box sx={{ flex: '1' }}>
+                <AuthProvider>
                     <Routes>
-                        <Route path="/" element={<Homepage />} />
-                        <Route path="/about" element={<AboutPage />} />
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route path="/register" element={<RegisterPage />} />
+                        <Route
+                            path="/"
+                            element={
+                                <>
+                                    <TopBar />
+                                    <Homepage />
+                                    <Footer />
+                                </>
+                            }
+                        />
+                        <Route
+                            path="/about"
+                            element={
+                                <>
+                                    <TopBar />
+                                    <AboutPage />
+                                    <Footer />
+                                </>
+                            }
+                        />
+                        <Route
+                            path="/login"
+                            element={
+                                <>
+                                    <TopBar />
+                                    <LoginPage />
+                                    <Footer />
+                                </>
+                            }
+                        />
+                        <Route
+                            path="/register"
+                            element={
+                                <>
+                                    <TopBar />
+                                    <RegisterPage />
+                                    <Footer />
+                                </>
+                            }
+                        />
                         <Route path="/category">
-                            <Route path="" element={<CategoryPage />} />
-                            <Route path=":id" element={<CategoryPage />} />
+                            <Route
+                                path=""
+                                element={
+                                    <>
+                                        <TopBar />
+                                        <CategoryPage />
+                                        <Footer />
+                                    </>
+                                }
+                            />
+                            <Route
+                                path=":id"
+                                element={
+                                    <>
+                                        <TopBar />
+                                        <CategoryPage />
+                                        <Footer />
+                                    </>
+                                }
+                            />
                         </Route>
-                        <Route path="*" element={<Homepage />} />
+                        <Route
+                            path="*"
+                            element={
+                                <>
+                                    <TopBar />
+                                    <Homepage />
+                                    <Footer />
+                                </>
+                            }
+                        />
+                        <Route
+                            element={
+                                <ProtectedRoute>
+                                    <ResponsiveDrawer />
+                                </ProtectedRoute>
+                            }
+                        >
+                            <Route path="/admin">
+                                <Route path="" element={<HomePanel />} />
+                                <Route path="products" element={<ProductsTable />} />
+                                <Route path="*" element={<HomePanel />} />
+                            </Route>
+                        </Route>
                     </Routes>
-                </Box>
-                <Footer />
+                </AuthProvider>
             </Box>
         </BrowserRouter>
     )
