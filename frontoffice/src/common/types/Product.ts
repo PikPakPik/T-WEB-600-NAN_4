@@ -9,6 +9,7 @@ export interface Product {
     photo: string
     category: string
     stock: number
+    active: boolean
     onSale: boolean
     discount?: number
 }
