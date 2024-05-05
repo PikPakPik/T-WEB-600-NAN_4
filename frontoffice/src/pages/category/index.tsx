@@ -12,7 +12,7 @@ import {
     Button,
 } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { Category } from '@/common/types/Category'
 import { Product } from '@/common/types/Product'
 import { useLocation } from 'react-router-dom'
@@ -21,6 +21,7 @@ import { Close } from '@mui/icons-material'
 
 const CategoryPage = () => {
     const location = useLocation()
+    const Navigate = useNavigate()
     const { categoryName, categoryImage } = location.state || {}
     const [categoryNameState, setCategoryNameState] = useState(categoryName)
     const [categoryImageState, setCategoryImageState] = useState(categoryImage)
@@ -34,6 +35,14 @@ const CategoryPage = () => {
     const [sortingCriteria, setSortingCriteria] = useState<string>('')
     const [priceRange, setPriceRange] = useState<number[]>([0, 0])
     const [openDialog, setOpenDialog] = useState(false)
+
+    const handleProductClick = (product: Product) => {
+        Navigate(`/product/${product.id}`, {
+            state: {
+                productfromState: product,
+            },
+        })
+    }
 
     const handleDialogOpen = () => {
         setOpenDialog(true)
@@ -395,6 +404,7 @@ const CategoryPage = () => {
                                         width: '100%',
                                         height: 'auto',
                                     }}
+                                    onClick={() => handleProductClick(product)}
                                 >
                                     <Box
                                         sx={{

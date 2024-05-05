@@ -5,6 +5,7 @@ import TopBar from '@/common/Layout/TopBar'
 import LoginPage from '@/pages/login'
 import CategoryPage from '@/pages/category'
 import RegisterPage from '@/pages/register'
+import ProductPage from '@/pages/Product'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Footer from '@/common/Layout/Footer'
 import { Box } from '@mui/material'
@@ -35,6 +36,10 @@ function App() {
                         <Route path="/category">
                             <Route path="" element={<CategoryPage />} />
                             <Route path=":id" element={<CategoryPage />} />
+                        </Route>
+                        <Route path="/product">
+                            <Route path="" element={<ProductPage />} />
+                            <Route path=":id" element={<ProductPage />} />
                         </Route>
                         <Route path="*" element={<Homepage />} />
                     </Routes>
