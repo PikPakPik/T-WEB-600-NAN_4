@@ -12,6 +12,7 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import CartButton from '@/common/Layout/CartButton'
+import Cart from '@/common/cart/Cart'
 
 const pages = ['Products', 'About us', 'Contact us']
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
@@ -21,6 +22,15 @@ function ResponsiveAppBar() {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
     const [cartItemCount, setCartItemCount] = React.useState<number>(0)
 
+    const [isCartOpen, setIsCartOpen] = React.useState(false)
+
+    const handleOpenCart = () => {
+        setIsCartOpen(true)
+    }
+
+    const handleCloseCart = () => {
+        setIsCartOpen(false)
+    }
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget)
     }
@@ -125,7 +135,9 @@ function ResponsiveAppBar() {
                         ))}
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
+                        <Box onClick={handleOpenCart}>
                             <CartButton itemCount={cartItemCount} />
+                        </Box>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -156,6 +168,7 @@ function ResponsiveAppBar() {
                     </Box>
                 </Toolbar>
             </Container>
+            <Cart isOpen={isCartOpen} handleClose={handleCloseCart} />
         </AppBar>
     )
 }
