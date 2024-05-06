@@ -14,6 +14,8 @@ import MenuItem from '@mui/material/MenuItem'
 import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import { Roles } from '../types/Roles'
+import CartButton from '@/common/Layout/CartButton'
+import Cart from '@/common/cart/Cart'
 
 const pages = ['Products', 'About us', 'Contact us']
 
@@ -35,7 +37,17 @@ function ResponsiveAppBar() {
     if (user?.roles.includes(Roles.ROLE_ADMIN)) {
         settingsConnected.push({ name: 'Admin', link: '/admin' })
     }
+    const [cartItemCount, setCartItemCount] = React.useState<number>(0)
 
+    const [isCartOpen, setIsCartOpen] = React.useState(false)
+
+    const handleOpenCart = () => {
+        setIsCartOpen(true)
+    }
+
+    const handleCloseCart = () => {
+        setIsCartOpen(false)
+    }
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget)
     }
@@ -140,6 +152,9 @@ function ResponsiveAppBar() {
                         ))}
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
+                        <Box onClick={handleOpenCart}>
+                            <CartButton itemCount={cartItemCount} />
+                        </Box>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 {user ? (
@@ -194,6 +209,7 @@ function ResponsiveAppBar() {
                     </Box>
                 </Toolbar>
             </Container>
+            <Cart isOpen={isCartOpen} handleClose={handleCloseCart} />
         </AppBar>
     )
 }
