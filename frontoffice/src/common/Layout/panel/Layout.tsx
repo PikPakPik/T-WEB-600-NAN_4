@@ -17,7 +17,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import InventoryIcon from '@mui/icons-material/Inventory'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { AccountCircle } from '@mui/icons-material'
+import { AccountCircle, ArrowBack, Height } from '@mui/icons-material'
 import { Menu, MenuItem } from '@mui/material'
 import { useAuth } from '@/common/hooks/useAuth'
 
@@ -40,39 +40,11 @@ function ProfileMenu() {
     }
 
     return (
-        <div style={{ marginLeft: 'auto' }}>
-            <IconButton
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-            >
-                <AccountCircle />
-                <Typography variant="body1" style={{ marginLeft: '5px' }}>
-                    {user?.firstname}
-                </Typography>
-            </IconButton>
-            <Menu
-                id="menu-appbar"
-                anchorEl={anchorEl}
-                anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                }}
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-            >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-            </Menu>
+        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
+            <AccountCircle />
+            <Typography variant="body1" style={{ marginLeft: '5px' }}>
+                {user?.firstname}
+            </Typography>
         </div>
     )
 }
@@ -110,14 +82,9 @@ export default function ResponsiveDrawer(props: Props) {
             icon: <InventoryIcon />,
         },
         {
-            text: 'Send email',
-            link: '/admin/send-email',
+            text: 'Categories',
+            link: '/admin/categories',
             icon: <InboxIcon />,
-        },
-        {
-            text: 'Drafts',
-            link: '/admin/drafts',
-            icon: <MailIcon />,
         },
     ]
 
@@ -134,24 +101,21 @@ export default function ResponsiveDrawer(props: Props) {
                         </ListItemButton>
                     </ListItem>
                 ))}
+                <ListItem
+                    disablePadding
+                    onClick={() => navigate('/')}
+                    style={{ position: 'absolute', bottom: 0 }}
+                >
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <ArrowBack />
+                        </ListItemIcon>
+                        <ListItemText primary="Return to Site" />
+                    </ListItemButton>
+                </ListItem>
             </List>
-            <Divider />
-            <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-        </div>
+        </>
     )
-
-    // Remove this const when copying and pasting into your project.
     const container = window !== undefined ? () => window().document.body : undefined
 
     return (
@@ -174,9 +138,6 @@ export default function ResponsiveDrawer(props: Props) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        E-Commerce Panel
-                    </Typography>
                     <ProfileMenu />
                 </Toolbar>
             </AppBar>

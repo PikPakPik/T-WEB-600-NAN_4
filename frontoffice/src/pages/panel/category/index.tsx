@@ -1,13 +1,13 @@
-import { Product } from '@/common/types/Product'
+import { Category } from '@/common/types/Category'
 import DataTable from '@/modules/panel/components/DataTable'
 import { Box } from '@mui/material'
 import { useEffect, useState } from 'react'
-const ProductsPanel = () => {
-    const [products, setProducts] = useState<Product[]>([])
+const CategoriesPanel = () => {
+    const [categories, setCategories] = useState<Category[]>([])
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetch(`${process.env.API_URL}/products`)
+        fetch(`${process.env.API_URL}/categories`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok')
@@ -15,17 +15,21 @@ const ProductsPanel = () => {
                 return response.json()
             })
             .then((data) => {
-                setProducts(data.items)
+                setCategories(data.items)
                 setLoading(false)
             })
     }, [])
     return (
         <>
             <Box component="main">
-                {loading ? <Box>Loading...</Box> : <DataTable data={products} name={'Products'} />}
+                {loading ? (
+                    <Box>Loading...</Box>
+                ) : (
+                    <DataTable data={categories} name={'Categories'} />
+                )}
             </Box>
         </>
     )
 }
 
-export default ProductsPanel
+export default CategoriesPanel
