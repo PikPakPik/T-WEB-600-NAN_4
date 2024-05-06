@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/orders')]
 class OrderController extends AbstractController
 {
-    #[Route('', name: 'api_get_cart', methods: ['GET'], format: 'json')]
+    #[Route('', name: 'api_get_orders_user', methods: ['GET'], format: 'json')]
     public function cart(OrderRepository $orderRepository): Response
     {
         /** @var User $user */

@@ -1,4 +1,4 @@
-// import { Category } from "@/common/types/Category";
+import { Category } from '@/common/types/Category'
 
 export interface Product {
     id: number
@@ -7,7 +7,7 @@ export interface Product {
     price: number
     description: string
     photo: string
-    category: string
+    category: Category
     stock: number
     active: boolean
     onSale: boolean

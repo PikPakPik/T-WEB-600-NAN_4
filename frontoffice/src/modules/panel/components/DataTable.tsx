@@ -2,6 +2,7 @@ import { CheckSharp } from '@mui/icons-material'
 import CloseIcon from '@mui/icons-material/Close'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
+import AddIcon from '@mui/icons-material/Add'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
@@ -23,6 +24,7 @@ import Typography from '@mui/material/Typography'
 import { alpha } from '@mui/material/styles'
 import { visuallyHidden } from '@mui/utils'
 import * as React from 'react'
+import { Modal } from '@mui/material'
 
 interface Data {
     [key: string]: number | string
@@ -134,63 +136,111 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 interface EnhancedTableToolbarProps {
     numSelected: number
     name: string
+    type: any
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected, name } = props
+    const { numSelected, name, type } = props
+    const [open, setOpen] = React.useState(false)
+    const news = true
 
     return (
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 },
-                ...(numSelected > 0 && {
-                    bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-                }),
-            }}
-        >
-            {numSelected > 0 ? (
-                <Typography
-                    sx={{ flex: '1 1 100%' }}
-                    color="inherit"
-                    variant="subtitle1"
-                    component="div"
+        <>
+            <Modal
+                open={open}
+                onClose={() => setOpen(false)}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                    }}
                 >
-                    {numSelected} selected
-                </Typography>
-            ) : (
-                <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-                    {name}
-                </Typography>
-            )}
-            {numSelected > 0 ? (
-                <>
-                    {numSelected === 1 && (
-                        <Tooltip title="Edit">
+                    {Object.keys(type).map((key) => (
+                        <input
+                            key={key}
+                            type={typeof type[key] === 'number' ? 'number' : 'text'}
+                            placeholder={key}
+                            value={news ? '' : type[key]}
+                        />
+                    ))}
+                </Box>
+            </Modal>
+            <Toolbar
+                sx={{
+                    pl: { sm: 2 },
+                    pr: { xs: 1, sm: 1 },
+                    ...(numSelected > 0 && {
+                        bgcolor: (theme) =>
+                            alpha(
+                                theme.palette.primary.main,
+                                theme.palette.action.activatedOpacity
+                            ),
+                    }),
+                }}
+            >
+                {numSelected > 0 ? (
+                    <Typography
+                        sx={{ flex: '1 1 100%' }}
+                        color="inherit"
+                        variant="subtitle1"
+                        component="div"
+                    >
+                        {numSelected} selected
+                    </Typography>
+                ) : (
+                    <Typography
+                        sx={{ flex: '1 1 100%' }}
+                        variant="h6"
+                        id="tableTitle"
+                        component="div"
+                    >
+                        {name}
+                    </Typography>
+                )}
+                {numSelected > 0 ? (
+                    <>
+                        {numSelected === 1 && (
+                            <Tooltip title="Edit">
+                                <IconButton>
+                                    <EditIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                        <Tooltip title="Delete">
                             <IconButton>
-                                <EditIcon />
+                                <DeleteIcon />
                             </IconButton>
                         </Tooltip>
-                    )}
-                    <Tooltip title="Delete">
-                        <IconButton>
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip>
-                </>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton>
-                        <FilterListIcon />
-                    </IconButton>
-                </Tooltip>
-            )}
-        </Toolbar>
+                    </>
+                ) : (
+                    <>
+                        <Tooltip title="Create new entry">
+                            <IconButton onClick={() => setOpen(true)}>
+                                <AddIcon />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Filter list">
+                            <IconButton>
+                                <FilterListIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </>
+                )}
+            </Toolbar>
+        </>
     )
 }
 
-export default function DataTable({ data, name }: { data: Data[]; name: string }) {
+export default function DataTable({ data, name }: { data: any[]; name: string }) {
     const [order, setOrder] = React.useState<Order>('asc')
     const [orderBy, setOrderBy] = React.useState<keyof Data>('calories')
     const [selected, setSelected] = React.useState<readonly number[]>([])
@@ -261,7 +311,7 @@ export default function DataTable({ data, name }: { data: Data[]; name: string }
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} name={name} />
+                <EnhancedTableToolbar numSelected={selected.length} name={name} type={data[0]} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
