@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/categories')]
 class CategoryController extends AbstractController
@@ -43,6 +44,7 @@ class CategoryController extends AbstractController
 
 
     #[Route('', name: 'app_create_category', methods: ['POST'], format: 'json')]
+    #[IsGranted('ROLE_ADMIN')]
     public function createProduct(
         #[MapRequestPayload] CategoryDTO $categoryDTO,
         EntityManagerInterface $entityManager
@@ -64,6 +66,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_update_category', methods: ['PATCH'], format: 'json')]
+    #[IsGranted('ROLE_ADMIN')]
     public function updateProduct(
         #[MapRequestPayload] CategoryDTO $categoryDTO,
         Category $category,
@@ -85,6 +88,7 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_delete_category', methods: ['DELETE'], format: 'json')]
+    #[IsGranted('ROLE_ADMIN')]
     public function deleteProduct(Category $category, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($category);

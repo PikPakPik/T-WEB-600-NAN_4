@@ -38,7 +38,7 @@ class Product
 
     #[ORM\Column]
     #[Groups(['product:read', 'order:read'])]
-    private ?float $price = null;
+    private ?float $price = 0.0;
 
     #[ORM\Column]
     #[Groups(['product:read'])]
@@ -51,11 +51,11 @@ class Product
 
     #[ORM\Column]
     #[Groups(['product:read', 'cart:read'])]
-    private ?bool $active = null;
+    private ?bool $active = false;
 
     #[ORM\Column]
     #[Groups(['product:read', 'cart:read'])]
-    private ?int $stock = null;
+    private ?int $stock = 0;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     #[Groups(['product:read'])]

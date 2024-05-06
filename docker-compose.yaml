@@ -4,9 +4,10 @@ services:
     swagger:
         image: swaggerapi/swagger-ui:latest
         ports:
-            - "8080"
+            - "9090"
         environment:
             - SWAGGER_JSON=/swagger.json
+            - PORT="9090"
         volumes:
             - ./swagger.json:/swagger.json
 

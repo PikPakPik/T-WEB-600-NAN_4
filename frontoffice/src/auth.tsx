@@ -1,5 +1,9 @@
-import { createContext, ReactNode, useState } from 'react'
+import { createContext, ReactNode, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Roles } from './common/types/Roles'
+import { User } from './common/types/User'
+import Homepage from './pages/home'
+import Loader from './modules/loader/Loader'
 
 type Props = {
     children: ReactNode
@@ -7,7 +11,9 @@ type Props = {
 
 type IAuthContext = {
     isAuthenticated: boolean
-    token: string | null
+    isAdmin?: boolean
+    user: User | null
+    setUser: (user: User | null) => null
     setAuthenticated: (value: boolean, token?: string | null) => void // Modify the setAuthenticated function to accept a token
     handleLogin: (newToken: string) => void // Function to handle login
     handleLogout: () => void // Function to handle logout
@@ -15,7 +21,9 @@ type IAuthContext = {
 
 const initialValue: IAuthContext = {
     isAuthenticated: false,
-    token: null,
+    isAdmin: false,
+    user: null,
+    setUser: () => null, // Default function, will be overridden
     setAuthenticated: (value: boolean, token?: string | null) => {}, // Default function, will be overridden
     handleLogin: (newToken: string) => {}, // Default function, will be overridden
     handleLogout: () => {}, // Default function, will be overridden
@@ -25,26 +33,80 @@ const AuthContext = createContext<IAuthContext>(initialValue)
 
 const AuthProvider = ({ children }: Props) => {
     const [isAuthenticated, setAuthenticated] = useState(false)
-    const [token, setToken] = useState<string | null>(null) // Initialize token state
+    const [isAdmin, setIsAdmin] = useState(false)
+    const [user, setUser] = useState<User | null>(initialValue.user)
+    const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const initAuth = async () => {
+            // Utilisation de la constante pour le TOKEN_KEY et la méthode getItem pour récupérer le token
+            const storedToken = window.localStorage.getItem('token')
+            if (storedToken) {
+                try {
+                    // Utilisation de la constante pour API_URL et la méthode fetch pour récupérer les données
+                    const response = await fetch(`${process.env.API_URL}/users`, {
+                        headers: {
+                            Authorization: `Bearer ${storedToken}`,
+                        },
+                    })
+
+                    if (response.ok) {
+                        const data = await response.json()
+                        setAuthenticated(true)
+                        const user: User = {
+                            ...data,
+                            roles: data.roles.map(
+                                (role: string) => Roles[role as keyof typeof Roles]
+                            ),
+                        }
+                        setUser(user)
+                        setIsAdmin(user.roles.includes(Roles.ROLE_ADMIN))
+                    } else {
+                        console.error(`Server responded with status: ${response.status}`)
+                        if (response.status === 401) {
+                            window.localStorage.removeItem('token')
+                            window.location.href = '/login'
+                        }
+                    }
+                } catch (err) {
+                    window.localStorage.removeItem('token')
+                    window.location.href = '/login'
+                    console.error(err)
+                }
+            }
+            setLoading(false)
+        }
+
+        initAuth()
+    }, [])
 
     const handleLogout = () => {
         setAuthenticated(false)
-        setToken(null) // Reset token on logout
+        setUser(null)
+        localStorage.removeItem('token')
         navigate('/login')
     }
 
     const handleLogin = (newToken: string) => {
         setAuthenticated(true)
-        setToken(newToken) // Set the token after successful login
+        localStorage.setItem('token', newToken)
         navigate('/dashboard') // Redirect to dashboard or any other route after login
     }
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated, token, setAuthenticated, handleLogin, handleLogout }}
+            value={{
+                isAuthenticated,
+                isAdmin,
+                user,
+                setUser,
+                setAuthenticated,
+                handleLogin,
+                handleLogout,
+            }}
         >
-            {children}
+            {loading ? <Loader /> : children}
         </AuthContext.Provider>
     )
 }

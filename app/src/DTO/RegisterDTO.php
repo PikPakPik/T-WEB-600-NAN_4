@@ -50,4 +50,14 @@ class RegisterDTO
     {
         return $this->password;
     }
+
+    /**
+     * @return bool
+     */
+    public function isValid(): bool
+    {
+        $emailValid = filter_var($this->email, FILTER_VALIDATE_EMAIL);
+        $allFeilds = $this->firstname && $this->lastname && $this->email && $this->password;
+        return $emailValid && $allFeilds;
+    }
 }
