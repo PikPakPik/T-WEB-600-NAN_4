@@ -89,14 +89,10 @@ export default function ResponsiveDrawer(props: Props) {
     ]
 
     const drawer = (
-        <>
-            <Toolbar>
-                <Typography variant="h6" noWrap component="div">
-                    E-Commerce Panel
-                </Typography>
-            </Toolbar>
+        <div>
+            <Toolbar />
             <Divider />
-            <List sx={{ height: 'inherit' }}>
+            <List>
                 {firstListItem.map((item) => (
                     <ListItem key={item.text} disablePadding onClick={() => navigate(item.link)}>
                         <ListItemButton>
@@ -120,7 +116,6 @@ export default function ResponsiveDrawer(props: Props) {
             </List>
         </>
     )
-
     const container = window !== undefined ? () => window().document.body : undefined
 
     return (
