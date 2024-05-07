@@ -1,8 +1,8 @@
 import { CheckSharp } from '@mui/icons-material'
+import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import AddIcon from '@mui/icons-material/Add'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
@@ -24,7 +24,6 @@ import Typography from '@mui/material/Typography'
 import { alpha } from '@mui/material/styles'
 import { visuallyHidden } from '@mui/utils'
 import * as React from 'react'
-import { Modal } from '@mui/material'
 
 interface Data {
     [key: string]: number | string
@@ -136,44 +135,13 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 interface EnhancedTableToolbarProps {
     numSelected: number
     name: string
-    type: any
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected, name, type } = props
-    const [open, setOpen] = React.useState(false)
-    const news = true
+    const { numSelected, name } = props
 
     return (
         <>
-            <Modal
-                open={open}
-                onClose={() => setOpen(false)}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 4,
-                    }}
-                >
-                    {Object.keys(type).map((key) => (
-                        <input
-                            key={key}
-                            type={typeof type[key] === 'number' ? 'number' : 'text'}
-                            placeholder={key}
-                            value={news ? '' : type[key]}
-                        />
-                    ))}
-                </Box>
-            </Modal>
             <Toolbar
                 sx={{
                     pl: { sm: 2 },
@@ -224,7 +192,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                 ) : (
                     <>
                         <Tooltip title="Create new entry">
-                            <IconButton onClick={() => setOpen(true)}>
+                            <IconButton>
                                 <AddIcon />
                             </IconButton>
                         </Tooltip>
@@ -249,14 +217,16 @@ export default function DataTable({ data, name }: { data: any[]; name: string })
     const [rowsPerPage, setRowsPerPage] = React.useState(5)
 
     const handleRequestSort = (event: React.MouseEvent<unknown>, property: keyof Data) => {
-        const isAsc = orderBy === property && order === 'asc'
-        setOrder(isAsc ? 'desc' : 'asc')
-        setOrderBy(property)
+        if (event) {
+            const isAsc = orderBy === property && order === 'asc'
+            setOrder(isAsc ? 'desc' : 'asc')
+            setOrderBy(property)
+        }
     }
 
     const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.checked) {
-            const newSelected = data.map((n, index) => index)
+            const newSelected = data.map((index) => index)
             setSelected(newSelected)
             return
         }
@@ -264,6 +234,16 @@ export default function DataTable({ data, name }: { data: any[]; name: string })
     }
 
     const handleClick = (event: React.MouseEvent<unknown>, index: number) => {
+        if (event.shiftKey) {
+            const newSelected = [...selected]
+            const start = newSelected[0]
+            const end = index
+            const range = Array.from({ length: Math.abs(end - start) + 1 }, (_, i) =>
+                start < end ? start + i : start - i
+            )
+            newSelected.push(...range)
+            setSelected(newSelected)
+        }
         const selectedIndex = selected.indexOf(index)
         let newSelected: readonly number[] = []
 
@@ -283,7 +263,9 @@ export default function DataTable({ data, name }: { data: any[]; name: string })
     }
 
     const handleChangePage = (event: unknown, newPage: number) => {
-        setPage(newPage)
+        if (event) {
+            setPage(newPage)
+        }
     }
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -311,7 +293,7 @@ export default function DataTable({ data, name }: { data: any[]; name: string })
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} name={name} type={data[0]} />
+                <EnhancedTableToolbar numSelected={selected.length} name={name} />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -321,7 +303,7 @@ export default function DataTable({ data, name }: { data: any[]; name: string })
                         <EnhancedTableHead
                             numSelected={selected.length}
                             order={order}
-                            orderBy={orderBy}
+                            orderBy={orderBy as string}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
                             rowCount={data.length}
