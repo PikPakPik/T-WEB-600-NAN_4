@@ -134,6 +134,9 @@ class CartController extends AbstractController
             $entityManager->flush();
         }
 
+            $entityManager->persist($cart);
+            $entityManager->flush();
+        }
         $orderProduct = $cart->getProducts()->filter(function (OrderProduct $orderProduct) use ($product) {
             return $orderProduct->getProduct()->getId() === $product->getId();
         })->first();
@@ -220,6 +223,44 @@ class CartController extends AbstractController
         $orderProduct->setBuyPrice($product->getPrice());
 
         $entityManager->persist($orderProduct);
+        $entityManager->flush();
+
+        return $this->json(
+            $cart,
+            context: [
+                'groups' => [
+                    'cart:read',
+                    'date:read',
+                ]
+            ]
+        );
+    }
+
+    #[Route('/{id}', name: 'app_remove_product_from_cart', methods: ['DELETE'], format: 'json')]
+    public function removeProductFromCart(
+        CartRepository $cartRepository,
+        EntityManagerInterface $entityManager,
+        Product $product
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $cart = $cartRepository->findOneBy(['owner' => $user]);
+
+        $orderProduct = $cart->getProducts()->filter(function (OrderProduct $orderProduct) use ($product) {
+            return $orderProduct->getProduct()->getId() === $product->getId();
+        })->first();
+
+        if (!$orderProduct) {
+            return $this->json([
+                'message' => 'Product not found in cart'
+            ], 404);
+        }
+
+        $cart->removeProduct($orderProduct);
+
+        $entityManager->remove($orderProduct);
+        $entityManager->persist($cart);
         $entityManager->flush();
 
         return $this->json(

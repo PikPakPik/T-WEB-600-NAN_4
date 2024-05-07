@@ -100,11 +100,7 @@ export default function ResponsiveDrawer(props: Props) {
                         </ListItemButton>
                     </ListItem>
                 ))}
-                <ListItem
-                    disablePadding
-                    onClick={() => navigate('/')}
-                    style={{ position: 'absolute', bottom: 0 }}
-                >
+                <ListItem disablePadding onClick={() => navigate('/')}>
                     <ListItemButton>
                         <ListItemIcon>
                             <ArrowBack />

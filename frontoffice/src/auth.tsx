@@ -31,6 +31,7 @@ const initialValue: IAuthContext = {
 const AuthContext = createContext<IAuthContext>(initialValue)
 
 const AuthProvider = ({ children }: Props) => {
+    
     const [isAuthenticated, setAuthenticated] = useState(false)
     const [isAdmin, setIsAdmin] = useState(false)
     const [user, setUser] = useState<User | null>(initialValue.user)

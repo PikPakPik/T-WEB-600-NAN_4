@@ -9,6 +9,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange'
 import ShieldIcon from '@mui/icons-material/Shield'
+import Swal from 'sweetalert2'
 
 const ProductPage = () => {
     const location = useLocation()
@@ -53,6 +54,47 @@ const ProductPage = () => {
             fetchProduct()
         }
     }, [])
+    const addTocartBtn = async () => {
+        try {
+            Swal.fire({
+                title: 'Processing',
+                html: 'Please wait...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading()
+                },
+            })
+            const response = await fetch(`${process.env.API_URL}/carts/${currentProduct.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({
+                    quantity: quantity,
+                }),
+            })
+            if (response.ok) {
+                Swal.close()
+                Swal.fire({
+                    title: 'Done!',
+                    text: currentProduct.name + ' is now in your cart.',
+                    icon: 'success',
+                    confirmButtonText: 'Okay!',
+                })
+            } else {
+                Swal.close()
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occured while adding ' + currentProduct.name + ' to your cart.',
+                    icon: 'error',
+                    confirmButtonText: 'Okay!',
+                })
+            }
+        } catch (error) {}
+    }
 
     return (
         <>
@@ -245,6 +287,7 @@ const ProductPage = () => {
                             width: 'fit-content',
                             alignSelf: 'center',
                         }}
+                        onClick={() => addTocartBtn()}
                     >
                         Add to Cart
                     </Button>
