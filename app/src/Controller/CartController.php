@@ -13,6 +13,8 @@ use App\Repository\CartRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -123,9 +125,14 @@ class CartController extends AbstractController
         }
 
         $cart = $cartRepository->findOneBy(['owner' => $user]);
+
         if (!$cart) {
             $cart = new Cart();
             $cart->setOwner($user);
+
+            $entityManager->persist($cart);
+            $entityManager->flush();
+        }
 
             $entityManager->persist($cart);
             $entityManager->flush();

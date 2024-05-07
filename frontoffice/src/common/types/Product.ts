@@ -12,6 +12,8 @@ export interface Product {
     active: boolean
     onSale: boolean
     discount?: number
+    updatedAt?: string
+    createdAt?: string
 }
 
 // export interface Product {

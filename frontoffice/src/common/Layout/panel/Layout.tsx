@@ -1,25 +1,24 @@
-import * as React from 'react'
+import { useAuth } from '@/common/hooks/useAuth'
+import { AccountCircle, ArrowBack } from '@mui/icons-material'
+import InventoryIcon from '@mui/icons-material/Inventory'
+import MenuIcon from '@mui/icons-material/Menu'
+import InboxIcon from '@mui/icons-material/MoveToInbox'
+import UserIcon from '@mui/icons-material/PeopleAlt'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import CssBaseline from '@mui/material/CssBaseline'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
-import InboxIcon from '@mui/icons-material/MoveToInbox'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import MailIcon from '@mui/icons-material/Mail'
-import MenuIcon from '@mui/icons-material/Menu'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import InventoryIcon from '@mui/icons-material/Inventory'
+import * as React from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { AccountCircle, ArrowBack, Height } from '@mui/icons-material'
-import { Menu, MenuItem } from '@mui/material'
-import { useAuth } from '@/common/hooks/useAuth'
 
 const drawerWidth = 240
 
@@ -28,22 +27,13 @@ interface Props {
 }
 
 function ProfileMenu() {
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const { user } = useAuth()
-
-    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget)
-    }
-
-    const handleClose = () => {
-        setAnchorEl(null)
-    }
 
     return (
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center' }}>
             <AccountCircle />
             <Typography variant="body1" style={{ marginLeft: '5px' }}>
-                {user?.firstname}
+                {user?.firstName}
             </Typography>
         </div>
     )
@@ -86,13 +76,22 @@ export default function ResponsiveDrawer(props: Props) {
             link: '/admin/categories',
             icon: <InboxIcon />,
         },
+        {
+            text: 'Users',
+            link: '/admin/users',
+            icon: <UserIcon />,
+        },
     ]
 
     const drawer = (
         <>
-            <Toolbar />
+            <Toolbar>
+                <Typography variant="h6" noWrap component="div">
+                    E-Commerce Panel
+                </Typography>
+            </Toolbar>
             <Divider />
-            <List>
+            <List sx={{ height: 'inherit' }}>
                 {firstListItem.map((item) => (
                     <ListItem key={item.text} disablePadding onClick={() => navigate(item.link)}>
                         <ListItemButton>
@@ -101,11 +100,7 @@ export default function ResponsiveDrawer(props: Props) {
                         </ListItemButton>
                     </ListItem>
                 ))}
-                <ListItem
-                    disablePadding
-                    onClick={() => navigate('/')}
-                    style={{ position: 'absolute', bottom: 0 }}
-                >
+                <ListItem disablePadding onClick={() => navigate('/')}>
                     <ListItemButton>
                         <ListItemIcon>
                             <ArrowBack />

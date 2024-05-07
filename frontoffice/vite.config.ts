@@ -5,17 +5,40 @@ import path from 'path'
 
 dotenv.config()
 // https://vitejs.dev/config/
-export default defineConfig({
-    plugins: [react()],
-    resolve: {
-        alias: [
-            {
-                find: '@',
-                replacement: '/src',
+export default defineConfig(({ command, mode, isSsrBuild, isPreview }) => {
+    if (command === 'serve') {
+        return {
+            plugins: [react()],
+            resolve: {
+                alias: [
+                    {
+                        find: '@',
+                        replacement: '/src',
+                    },
+                ],
             },
-        ],
-    },
-    define: {
-        'process.env': process.env,
-    },
+            define: {
+                'process.env': process.env,
+            },
+        }
+    } else {
+        // command === 'build'
+        return {
+            plugins: [react()],
+            resolve: {
+                alias: [
+                    {
+                        find: '@',
+                        replacement: '/src',
+                    },
+                ],
+            },
+            define: {
+                'process.env': process.env,
+            },
+            build: {
+                outDir: path.resolve(__dirname, 'dist'),
+            },
+        }
+    }
 })

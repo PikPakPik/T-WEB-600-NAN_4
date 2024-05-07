@@ -2,13 +2,17 @@
 
 namespace App\Controller;
 
+use App\DTO\PaginationDTO;
 use App\DTO\UpdateUserDTO;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/api/users')]
 class UserController extends AbstractController
@@ -57,6 +61,16 @@ class UserController extends AbstractController
                     'date:read'
                 ]
             ]
+        );
+    }
+
+    #[Route('/all', name: 'api_get_all_users', methods: ['GET'], format: 'json')]
+    #[IsGranted('ROLE_ADMIN')]
+    public function allUsers(UserRepository $userRepository, #[MapQueryString] ?PaginationDTO $paginationDTO = new PaginationDTO()): Response
+    {
+        $product = $userRepository->getUsers($paginationDTO);
+        return $this->json(
+            $product
         );
     }
 }

@@ -2,11 +2,15 @@
 
 namespace App\Repository;
 
+use App\DTO\PaginationDTO;
+use App\DTO\PaginatorDTO;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\Security\User\UserLoaderInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 use Throwable;
 
 /**
@@ -23,6 +27,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
     public function __construct(
         ManagerRegistry $registry,
         private readonly LoggerInterface $logger,
+        private readonly SerializerInterface $serializer
     ) {
         parent::__construct($registry, User::class);
     }
@@ -43,5 +48,27 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
             $this->logger->error($e->getMessage());
             return null;
         }
+    }
+
+    public function getUsers(PaginationDTO $paginationDTO): array
+    {
+        $qb = $this->createQueryBuilder('p')
+            ->setFirstResult(($paginationDTO->getPage() - 1) * $paginationDTO->getLimit())
+            ->setMaxResults($paginationDTO->getLimit());
+
+        $paginator = new Paginator($qb);
+        $items = $qb->getQuery()->getResult();
+        $itemsSerialized = $this->serializer->serialize($items, 'json', [
+            'json_encode_options' => 15,
+            'groups' => [
+                'user:read'
+            ]
+        ]);
+        $paginatorDto = new PaginatorDTO();
+        $paginatorDto->setItems(json_decode($itemsSerialized, true))
+            ->setTotalItems($paginator->count())
+            ->setPaginationDTO($paginationDTO);
+
+        return $paginatorDto->toArray();
     }
 }

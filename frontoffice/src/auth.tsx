@@ -12,7 +12,7 @@ type IAuthContext = {
     isAuthenticated: boolean
     isAdmin?: boolean
     user: User | null
-    setUser: (user: User | null) => null
+    setUser: (user: User | null) => void
     setAuthenticated: (value: boolean, token?: string | null) => void // Modify the setAuthenticated function to accept a token
     handleLogin: (newToken: string) => void // Function to handle login
     handleLogout: () => void // Function to handle logout
@@ -23,8 +23,8 @@ const initialValue: IAuthContext = {
     isAdmin: false,
     user: null,
     setUser: () => null, // Default function, will be overridden
-    setAuthenticated: (value: boolean, token?: string | null) => {}, // Default function, will be overridden
-    handleLogin: (newToken: string) => {}, // Default function, will be overridden
+    setAuthenticated: () => {}, // Default function, will be overridden
+    handleLogin: () => {}, // Default function, will be overridden
     handleLogout: () => {}, // Default function, will be overridden
 }
 
@@ -111,4 +111,4 @@ const AuthProvider = ({ children }: Props) => {
     )
 }
 
-export { AuthProvider, AuthContext }
+export { AuthContext, AuthProvider }
