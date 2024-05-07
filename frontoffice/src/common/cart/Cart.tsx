@@ -20,7 +20,13 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
 
     const fetchCartItems = async () => {
         try {
-            const response = await fetch('http://localhost:3001/cart')
+            const response = await fetch(`${process.env.API_URL}/carts`,{
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            })
             const data = await response.json()
             setCart(data)
         } catch (error) {

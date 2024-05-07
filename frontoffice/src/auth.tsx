@@ -2,7 +2,6 @@ import { createContext, ReactNode, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Roles } from './common/types/Roles'
 import { User } from './common/types/User'
-import Homepage from './pages/home'
 import Loader from './modules/loader/Loader'
 
 type Props = {

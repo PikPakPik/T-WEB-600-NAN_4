@@ -89,7 +89,7 @@ export default function ResponsiveDrawer(props: Props) {
     ]
 
     const drawer = (
-        <div>
+        <>
             <Toolbar />
             <Divider />
             <List>
