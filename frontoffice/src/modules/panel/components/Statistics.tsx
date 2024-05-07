@@ -15,7 +15,13 @@ const Statistics = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(`${process.env.API_URL}/stats`)
+            const response = await fetch(`${process.env.API_URL}/stats`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+            })
             if (response.ok) {
                 const data = await response.json()
                 setStats(data)

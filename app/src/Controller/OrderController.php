@@ -60,4 +60,52 @@ class OrderController extends AbstractController
             ]
         );
     }
+
+    #[Route('/{id}/pay', name: 'pay_order', methods: ['GET'])]
+    public function checkout(OrderRepository $orderRepository, int $id): Response
+    {
+        $stripe = new \Stripe\StripeClient('sk_test_51PDoapP1r89JaicVPOLtQQshmMJZIjDMI6zFUuYD7fEQnFq61kxLq2T5t4rIwEMa60hnkaGon9b2XUgDfvr0fnRQ00q9IFJ3TR');
+        $order = $orderRepository->find($id);
+
+        if (!$order) {
+            return new Response('Order not found.', 404);
+        }
+
+        if ($order->getStatus() !== "pending") {
+            return new Response('Order is already processed.', 400);
+        }
+
+        $productsToShowTOPayment = [];
+
+        foreach ($order->getProducts() as $product) {
+            if (count($productsToShowTOPayment) === 20) {
+                break;
+            }
+
+            $productsToShowTOPayment[] = [
+                'price_data' => [
+                    'currency' => 'usd',
+                    'product_data' => [
+                        'name' => $product->getProduct()->getName(),
+                    ],
+                    'unit_amount' => $product->getBuyPrice(),
+                ],
+                'quantity' => $product->getQuantity(),
+            ];
+        }
+
+        $session = $stripe->checkout->sessions->create([
+            'success_url' => 'http://localhost/success',
+            'customer_email' => $this->getUser()->getEmail(),
+            'line_items' => [
+                $productsToShowTOPayment
+            ],
+            'mode' => 'payment',
+        ]);
+
+        return $this->json([
+            'id' => $session->id,
+            'url' => $session->url
+        ]);
+    }
 }

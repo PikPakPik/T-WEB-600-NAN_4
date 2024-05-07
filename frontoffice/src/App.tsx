@@ -13,6 +13,7 @@ import { useAuth } from './common/hooks/useAuth'
 import HomePanel from './pages/panel'
 import ProductsTable from './pages/panel/products'
 import CategoriesPanel from './pages/panel/category'
+import UsersPanel from './pages/panel/users'
 
 function ProtectedRoute({ children }: any) {
     const auth = useAuth()
@@ -116,6 +117,7 @@ function App() {
                                 <Route path="" element={<HomePanel />} />
                                 <Route path="products" element={<ProductsTable />} />
                                 <Route path="categories" element={<CategoriesPanel />} />
+                                <Route path="users" element={<UsersPanel />} />
                                 <Route path="*" element={<HomePanel />} />
                             </Route>
                         </Route>
