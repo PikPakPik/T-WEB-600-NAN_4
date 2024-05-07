@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DTO\CartDTO;
 use App\DTO\UpdateUserDTO;
+use App\Entity\Cart;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\Product;
@@ -122,7 +123,13 @@ class CartController extends AbstractController
         }
 
         $cart = $cartRepository->findOneBy(['owner' => $user]);
+        if (!$cart) {
+            $cart = new Cart();
+            $cart->setOwner($user);
 
+            $entityManager->persist($cart);
+            $entityManager->flush();
+        }
         $orderProduct = $cart->getProducts()->filter(function (OrderProduct $orderProduct) use ($product) {
             return $orderProduct->getProduct()->getId() === $product->getId();
         })->first();
@@ -221,7 +228,7 @@ class CartController extends AbstractController
             ]
         );
     }
-    
+
     #[Route('/{id}', name: 'app_remove_product_from_cart', methods: ['DELETE'], format: 'json')]
     public function removeProductFromCart(
         CartRepository $cartRepository,

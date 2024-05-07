@@ -8,7 +8,7 @@ import {
     Typography,
     Box,
 } from '@mui/material'
-import { useGlobalCartContext } from '@/common/context/CartContext'
+import { MyGlobalCartContext, useGlobalCartContext } from '@/common/context/CartContext'
 
 interface CartComponentProps {
     isOpen: boolean
@@ -16,11 +16,11 @@ interface CartComponentProps {
 }
 
 const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
-    const { cart, setCart } = useGlobalCartContext()
+    const { cart, setCart } = useContext(MyGlobalCartContext)
 
     const fetchCartItems = async () => {
         try {
-            const response = await fetch(`${process.env.API_URL}/carts`,{
+            const response = await fetch(`${process.env.API_URL}/carts`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -28,7 +28,14 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
                 },
             })
             const data = await response.json()
-            setCart(data)
+            if (response.ok) {
+                setCart(data.products)
+                console.log(data)
+                console.log(cart)
+                //console.log(cart,data.products)
+            } else {
+                throw new Error('Failed to fetch cart items')
+            }
         } catch (error) {
             console.error(error)
         }
@@ -44,9 +51,9 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
             return (
                 <>
                     {cart.map((item) => (
-                        <Box key={item.id}>
+                        <Box key={item.product.id}>
                             <Typography>{item.product.name}</Typography>
-                            <Typography>Price: ${item.product.price * item.quantity}</Typography>
+                            <Typography>Price: ${item.buyPrice * item.quantity}</Typography>
                             <Typography>Quantity: {item.quantity}</Typography>
                             <hr />
                         </Box>

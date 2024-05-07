@@ -14,6 +14,8 @@ import { useAuth } from './common/hooks/useAuth'
 import HomePanel from './pages/panel'
 import ProductsTable from './pages/panel/products'
 import CategoriesPanel from './pages/panel/category'
+import { MyGlobalCartContext } from './common/context/CartContext'
+import { useState } from 'react'
 
 function ProtectedRoute({ children }: any) {
     const auth = useAuth()
@@ -21,113 +23,143 @@ function ProtectedRoute({ children }: any) {
 }
 
 function App() {
+    const [cart, setCart] = useState([])
     return (
         <BrowserRouter>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between',
-                    minHeight: '100vh',
-                    backgroundColor: '#EEF4ED',
-                }}
-            >
-                <AuthProvider>
-                    <Routes>
-                        <Route
-                            path="/"
-                            element={
-                                <>
-                                    <TopBar />
-                                    <Homepage />
-                                    <Footer />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="/about"
-                            element={
-                                <>
-                                    <TopBar />
-                                    <AboutPage />
-                                    <Footer />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="/login"
-                            element={
-                                <>
-                                    <TopBar />
-                                    <LoginPage />
-                                    <Footer />
-                                </>
-                            }
-                        />
-                        <Route
-                            path="/register"
-                            element={
-                                <>
-                                    <TopBar />
-                                    <RegisterPage />
-                                    <Footer />
-                                </>
-                            }
-                        />
-                        <Route path="/category">
+            <MyGlobalCartContext.Provider value={{ cart, setCart }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        minHeight: '100vh',
+                        backgroundColor: '#EEF4ED',
+                    }}
+                >
+                    <AuthProvider>
+                        <Routes>
                             <Route
-                                path=""
+                                path="/"
                                 element={
                                     <>
                                         <TopBar />
-                                        <CategoryPage />
+                                        <Homepage />
                                         <Footer />
                                     </>
                                 }
                             />
                             <Route
-                                path=":id"
+                                path="/about"
                                 element={
                                     <>
                                         <TopBar />
-                                        <CategoryPage />
+                                        <AboutPage />
                                         <Footer />
                                     </>
                                 }
                             />
-                        </Route>
-                        <Route
-                            path="*"
-                            element={
-                                <>
-                                    <TopBar />
-                                    <Homepage />
-                                    <Footer />
-                                </>
-                            }
-                        />
-                        <Route
-                            element={
-                                <ProtectedRoute>
-                                    <ResponsiveDrawer />
-                                </ProtectedRoute>
-                            }
-                        >
-                            <Route path="/admin">
-                                <Route path="" element={<HomePanel />} />
-                                <Route path="products" element={<ProductsTable />} />
-                                <Route path="categories" element={<CategoriesPanel />} />
-                                <Route path="*" element={<HomePanel />} />
+                            <Route
+                                path="/login"
+                                element={
+                                    <>
+                                        <TopBar />
+                                        <LoginPage />
+                                        <Footer />
+                                    </>
+                                }
+                            />
+                            <Route
+                                path="/register"
+                                element={
+                                    <>
+                                        <TopBar />
+                                        <RegisterPage />
+                                        <Footer />
+                                    </>
+                                }
+                            />
+                            <Route path="/category">
+                                <Route
+                                    path=""
+                                    element={
+                                        <>
+                                            <TopBar />
+                                            <CategoryPage />
+                                            <Footer />
+                                        </>
+                                    }
+                                />
+                                <Route
+                                    path=":id"
+                                    element={
+                                        <>
+                                            <TopBar />
+                                            <CategoryPage />
+                                            <Footer />
+                                        </>
+                                    }
+                                />
                             </Route>
-                        </Route>
-                        <Route path="/product">
-                            <Route path="" element={<ProductPage />} />
-                            <Route path=":id" element={<ProductPage />} />
-                        </Route>
-                        <Route path="*" element={<Homepage />} />
-                    </Routes>
-                </AuthProvider>
-            </Box>
+                            <Route
+                                path="*"
+                                element={
+                                    <>
+                                        <TopBar />
+                                        <Homepage />
+                                        <Footer />
+                                    </>
+                                }
+                            />
+                            <Route
+                                element={
+                                    <ProtectedRoute>
+                                        <ResponsiveDrawer />
+                                    </ProtectedRoute>
+                                }
+                            >
+                                <Route path="/admin">
+                                    <Route path="" element={<HomePanel />} />
+                                    <Route path="products" element={<ProductsTable />} />
+                                    <Route path="categories" element={<CategoriesPanel />} />
+                                    <Route path="*" element={<HomePanel />} />
+                                </Route>
+                            </Route>
+                            <Route path="/product">
+                                <Route
+                                    path=""
+                                    element={
+                                        <>
+                                            <TopBar />
+                                            <ProductPage />
+                                            <Footer />
+                                        </>
+                                    }
+                                />
+                                <Route
+                                    path=":id"
+                                    element={
+                                        <>
+                                            <TopBar />
+                                            <ProductPage />
+                                            <Footer />
+                                        </>
+                                    }
+                                />
+                            </Route>
+                            <Route
+                                path="*"
+                                element={
+                                    <>
+                                        <TopBar />
+                                        <Homepage />
+                                        <Footer />
+                                    </>
+                                }
+                            />
+                        </Routes>
+                    </AuthProvider>
+                </Box>
+            </MyGlobalCartContext.Provider>
         </BrowserRouter>
     )
 }
