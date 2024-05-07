@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-const CategoriesPanel = () => {
+const UsersPanel = () => {
     return (
         <>
             <Box component="main"></Box>
@@ -7,4 +7,4 @@ const CategoriesPanel = () => {
     )
 }
 
-export default CategoriesPanel
+export default UsersPanel

@@ -30,7 +30,7 @@ const ProductCard = (props: Product) => {
                 }}
             >
                 <img
-                    src={props.image}
+                    src={props.photo}
                     alt="processors"
                     style={{
                         cursor: 'pointer',

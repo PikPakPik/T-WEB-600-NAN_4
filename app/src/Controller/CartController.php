@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DTO\CartDTO;
 use App\DTO\UpdateUserDTO;
+use App\Entity\Cart;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
 use App\Entity\Product;
@@ -12,6 +13,8 @@ use App\Repository\CartRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -122,6 +125,14 @@ class CartController extends AbstractController
         }
 
         $cart = $cartRepository->findOneBy(['owner' => $user]);
+
+        if (!$cart) {
+            $cart = new Cart();
+            $cart->setOwner($user);
+
+            $entityManager->persist($cart);
+            $entityManager->flush();
+        }
 
         $orderProduct = $cart->getProducts()->filter(function (OrderProduct $orderProduct) use ($product) {
             return $orderProduct->getProduct()->getId() === $product->getId();
