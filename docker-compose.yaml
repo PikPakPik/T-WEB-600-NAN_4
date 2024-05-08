@@ -12,7 +12,7 @@ services:
             - ./swagger.json:/swagger.json
 
     php-fpm:
-        build: .docker/php-fpm
+        build: .
         volumes:
             - ./app/:/var/www/project
             - .docker/php-fpm/php.ini:/usr/local/etc/php/php.ini
