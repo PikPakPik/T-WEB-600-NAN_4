@@ -1,13 +1,13 @@
-import { User } from "@/common/types/User";
-import { OrderProduct } from "@/common/types/OrderProduct";
+import { User } from '@/common/types/User'
+import { OrderProduct } from '@/common/types/OrderProduct'
 
 export interface Order {
-	id: number;
-	user: User;
-	status: string;
-	totalPrice: number;
-	products: OrderProduct[];
-	createdAt: Date;
-	updatedAt: Date;
-	deletedAt: Date;
+    id: number
+    owner: User
+    status: string
+    totalPrice: number
+    products: OrderProduct[]
+    createdAt: string
+    updatedAt: string
+    deletedAt: string
 }

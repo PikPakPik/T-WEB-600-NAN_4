@@ -1,5 +1,5 @@
 import { Category } from '@/common/types/Category'
-import { Product } from '@/common/types/Product'
+import { Circle } from '@mui/icons-material'
 import { Box, Button, Skeleton } from '@mui/material'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
@@ -9,49 +9,26 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import * as React from 'react'
-import ModalUpsertProduct from './ModalUpsertProduct'
-import { Circle } from '@mui/icons-material'
+import ModalUpsertCategory from './ModalUpsertCategory'
 
 function createData(
     id: number,
     name: string,
-    price: number,
-    description: string,
-    photo: string,
-    category: Category,
-    stock: number,
     active: boolean,
-    discount?: number,
     createdAt?: string,
     updatedAt?: string
 ) {
-    const category_name = category.name
-    if (!discount) discount = 0
-    const discount_price = price - (price * discount) / 100
-    return {
-        id,
-        name,
-        description,
-        photo,
-        price,
-        discount,
-        discount_price,
-        active,
-        stock,
-        category_name,
-        createdAt,
-        updatedAt,
-    }
+    return { id, name, active, createdAt, updatedAt }
 }
 
-export default function TableProducts() {
-    const [products, setProducts] = React.useState<Product[]>([])
+export default function TableCategories() {
+    const [categories, setCategories] = React.useState<Category[]>([])
     const [loading, setLoading] = React.useState(true)
     const [openModal, setOpenModal] = React.useState(false)
-    const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null)
+    const [selectedCategory, setSelectedCategory] = React.useState<Category | null>(null)
 
     React.useEffect(() => {
-        fetch(`${process.env.API_URL}/products`)
+        fetch(`${process.env.API_URL}/categories`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok')
@@ -59,31 +36,31 @@ export default function TableProducts() {
                 return response.json()
             })
             .then((data) => {
-                setProducts(data.items)
+                setCategories(data.items)
                 setLoading(false)
             })
     }, [])
 
-    const handleProductChange = (product: Product) => {
-        setProducts((prevProducts) => {
-            const existingProduct = prevProducts.find((p) => p.id === product.id)
+    const handleCategoryChange = (category: Category) => {
+        setCategories((prevCategory) => {
+            const existingProduct = prevCategory?.find((p) => p.id === category.id)
             if (existingProduct) {
                 // Si le produit existe déjà, remplacez-le par le nouveau produit
-                return prevProducts.map((p) => (p.id === product.id ? product : p))
+                return prevCategory.map((p) => (p.id === category.id ? category : p))
             } else {
                 // Si le produit n'existe pas, ajoutez-le à la liste des produits
-                return [...prevProducts, product]
+                return [...prevCategory, category]
             }
         })
     }
 
     return (
         <>
-            <ModalUpsertProduct
+            <ModalUpsertCategory
                 open={openModal}
                 handleClose={() => setOpenModal(false)}
-                data={selectedProduct}
-                onProductChange={handleProductChange}
+                data={selectedCategory}
+                onCategoryChange={handleCategoryChange}
             />
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <Button
@@ -93,11 +70,11 @@ export default function TableProducts() {
                         ':hover': { backgroundColor: 'darkgreen' },
                     }}
                     onClick={() => {
-                        setSelectedProduct(null)
+                        setSelectedCategory(null)
                         setOpenModal(true)
                     }}
                 >
-                    Add Product
+                    Add Category
                 </Button>
             </Box>
             <TableContainer component={Paper}>
@@ -110,7 +87,7 @@ export default function TableProducts() {
                                 </>
                             ) : (
                                 <>
-                                    {Object.keys(products[0]).map((key) => (
+                                    {Object.keys(categories[0]).map((key) => (
                                         <TableCell key={key}>{key}</TableCell>
                                     ))}
                                     <TableCell>Actions</TableCell>
@@ -122,19 +99,13 @@ export default function TableProducts() {
                         {loading ? (
                             <TableRowsLoader rowsNum={10} columnsNum={20} />
                         ) : (
-                            products.map((product) => {
+                            categories.map((category) => {
                                 const row = createData(
-                                    product.id,
-                                    product.name,
-                                    product.price,
-                                    product.description,
-                                    product.photo,
-                                    product.category,
-                                    product.stock,
-                                    product.active,
-                                    product.discount,
-                                    product.createdAt,
-                                    product.updatedAt
+                                    category.id,
+                                    category.name,
+                                    category.active,
+                                    category.createdAt,
+                                    category.updatedAt
                                 )
                                 return (
                                     <TableRow key={row.id}>
@@ -160,7 +131,7 @@ export default function TableProducts() {
                                                         ':hover': { backgroundColor: 'darkgreen' },
                                                     }}
                                                     onClick={() => {
-                                                        setSelectedProduct(product)
+                                                        setSelectedCategory(category)
                                                         setOpenModal(true)
                                                     }}
                                                 >
@@ -174,7 +145,7 @@ export default function TableProducts() {
                                                     }}
                                                     onClick={() => {
                                                         fetch(
-                                                            `${process.env.API_URL}/products/${row.id}`,
+                                                            `${process.env.API_URL}/categories/${row.id}`,
                                                             {
                                                                 method: 'DELETE',
                                                             }
@@ -184,8 +155,8 @@ export default function TableProducts() {
                                                                     'Network response was not ok'
                                                                 )
                                                             }
-                                                            setProducts(
-                                                                products.filter(
+                                                            setCategories(
+                                                                categories.filter(
                                                                     (p) => p.id !== row.id
                                                                 )
                                                             )

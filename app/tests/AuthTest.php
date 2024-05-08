@@ -34,36 +34,6 @@ class AuthTest extends WebTestCase
         $this->assertEquals(401, $client->getResponse()->getStatusCode());
     }
 
-    // public function testRegisterUser()
-    // {
-    //     $client = static::createClient();
-    //     $client->request('POST', '/api/register', [
-    //         'email' => 'tressel.alexandre@icloud.com',
-    //         'password' => 'azertyuiop',
-    //         'firstname' => 'Alexandre',
-    //         'lastname' => 'Tressel'
-    //     ]);
-    //     $this->assertEquals(200, $client->getResponse()->getStatusCode());
-    //     $client->request('POST', '/api/login', [
-    //         'email' => 'tressel.alexandre@icloud.com',
-    //         'password' => 'azertyuiop'
-    //     ]);
-    //     $this->assertEquals(200, $client->getResponse()->getStatusCode());
-    // }
-
-
-    // public function testRegisterUserWithExistingEmail()
-    // {
-    //     $client = static::createClient();
-    //     $client->request('POST', '/api/register', [
-    //         'email' => 'devadmin@epitech.eu',
-    //         'password' => 'Ep1t3ch@admin',
-    //         'firstname' => 'devadmin',
-    //         'lastname' => 'devadmin'
-    //     ]);
-    //     $this->assertEquals(409, $client->getResponse()->getStatusCode());
-    // }
-
     public function testRegisterUserWithBadEmail()
     {
         $client = static::createClient();

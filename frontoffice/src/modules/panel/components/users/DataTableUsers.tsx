@@ -1,5 +1,4 @@
-import { Category } from '@/common/types/Category'
-import { Product } from '@/common/types/Product'
+import { User } from '@/common/types/User'
 import { Box, Button, Skeleton } from '@mui/material'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
@@ -9,49 +8,28 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import * as React from 'react'
-import ModalUpsertProduct from './ModalUpsertProduct'
-import { Circle } from '@mui/icons-material'
+import ModalUpsertUser from './ModalUpsertUsers'
+import { Roles } from '@/common/types/Roles'
 
 function createData(
     id: number,
-    name: string,
-    price: number,
-    description: string,
-    photo: string,
-    category: Category,
-    stock: number,
-    active: boolean,
-    discount?: number,
-    createdAt?: string,
-    updatedAt?: string
+    login: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    roles: Roles[]
 ) {
-    const category_name = category.name
-    if (!discount) discount = 0
-    const discount_price = price - (price * discount) / 100
-    return {
-        id,
-        name,
-        description,
-        photo,
-        price,
-        discount,
-        discount_price,
-        active,
-        stock,
-        category_name,
-        createdAt,
-        updatedAt,
-    }
+    return { id, login, firstName, lastName, email, roles }
 }
 
-export default function TableProducts() {
-    const [products, setProducts] = React.useState<Product[]>([])
+export default function TableUsers() {
+    const [users, setUsers] = React.useState<User[]>([])
     const [loading, setLoading] = React.useState(true)
     const [openModal, setOpenModal] = React.useState(false)
-    const [selectedProduct, setSelectedProduct] = React.useState<Product | null>(null)
+    const [selectedUser, setSelectedUser] = React.useState<User | null>(null)
 
     React.useEffect(() => {
-        fetch(`${process.env.API_URL}/products`)
+        fetch(`${process.env.API_URL}/users/all`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok')
@@ -59,31 +37,31 @@ export default function TableProducts() {
                 return response.json()
             })
             .then((data) => {
-                setProducts(data.items)
+                setUsers(data.items)
                 setLoading(false)
             })
     }, [])
 
-    const handleProductChange = (product: Product) => {
-        setProducts((prevProducts) => {
-            const existingProduct = prevProducts.find((p) => p.id === product.id)
+    const handleUserChange = (user: User) => {
+        setUsers((prevUser) => {
+            const existingProduct = prevUser?.find((p) => p.id === user.id)
             if (existingProduct) {
                 // Si le produit existe déjà, remplacez-le par le nouveau produit
-                return prevProducts.map((p) => (p.id === product.id ? product : p))
+                return prevUser.map((p) => (p.id === user.id ? user : p))
             } else {
                 // Si le produit n'existe pas, ajoutez-le à la liste des produits
-                return [...prevProducts, product]
+                return [...prevUser, user]
             }
         })
     }
 
     return (
         <>
-            <ModalUpsertProduct
+            <ModalUpsertUser
                 open={openModal}
                 handleClose={() => setOpenModal(false)}
-                data={selectedProduct}
-                onProductChange={handleProductChange}
+                data={selectedUser}
+                onUserChange={handleUserChange}
             />
             <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
                 <Button
@@ -93,11 +71,11 @@ export default function TableProducts() {
                         ':hover': { backgroundColor: 'darkgreen' },
                     }}
                     onClick={() => {
-                        setSelectedProduct(null)
+                        setSelectedUser(null)
                         setOpenModal(true)
                     }}
                 >
-                    Add Product
+                    Add User
                 </Button>
             </Box>
             <TableContainer component={Paper}>
@@ -110,7 +88,7 @@ export default function TableProducts() {
                                 </>
                             ) : (
                                 <>
-                                    {Object.keys(products[0]).map((key) => (
+                                    {Object.keys(users[0]).map((key) => (
                                         <TableCell key={key}>{key}</TableCell>
                                     ))}
                                     <TableCell>Actions</TableCell>
@@ -122,35 +100,20 @@ export default function TableProducts() {
                         {loading ? (
                             <TableRowsLoader rowsNum={10} columnsNum={20} />
                         ) : (
-                            products.map((product) => {
+                            users.map((user) => {
                                 const row = createData(
-                                    product.id,
-                                    product.name,
-                                    product.price,
-                                    product.description,
-                                    product.photo,
-                                    product.category,
-                                    product.stock,
-                                    product.active,
-                                    product.discount,
-                                    product.createdAt,
-                                    product.updatedAt
+                                    user.id,
+                                    user.login,
+                                    user.firstName,
+                                    user.lastName,
+                                    user.email,
+                                    user.roles
                                 )
                                 return (
                                     <TableRow key={row.id}>
-                                        {Object.values(row).map((value, index) =>
-                                            value === true || value === false ? (
-                                                <TableCell key={index}>
-                                                    {value ? (
-                                                        <Circle color="success" />
-                                                    ) : (
-                                                        <Circle color="error" />
-                                                    )}
-                                                </TableCell>
-                                            ) : (
-                                                <TableCell key={index}>{value}</TableCell>
-                                            )
-                                        )}
+                                        {Object.values(row).map((value, index) => (
+                                            <TableCell key={index}>{value}</TableCell>
+                                        ))}
                                         <TableCell>
                                             <Box sx={{ display: 'flex', gap: '10px' }}>
                                                 <Button
@@ -160,7 +123,7 @@ export default function TableProducts() {
                                                         ':hover': { backgroundColor: 'darkgreen' },
                                                     }}
                                                     onClick={() => {
-                                                        setSelectedProduct(product)
+                                                        setSelectedUser(user)
                                                         setOpenModal(true)
                                                     }}
                                                 >
@@ -174,7 +137,7 @@ export default function TableProducts() {
                                                     }}
                                                     onClick={() => {
                                                         fetch(
-                                                            `${process.env.API_URL}/products/${row.id}`,
+                                                            `${process.env.API_URL}/categories/${row.id}`,
                                                             {
                                                                 method: 'DELETE',
                                                             }
@@ -184,10 +147,8 @@ export default function TableProducts() {
                                                                     'Network response was not ok'
                                                                 )
                                                             }
-                                                            setProducts(
-                                                                products.filter(
-                                                                    (p) => p.id !== row.id
-                                                                )
+                                                            setUsers(
+                                                                users.filter((p) => p.id !== row.id)
                                                             )
                                                         })
                                                     }}

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DTO\CartDTO;
+use App\DTO\PaginationDTO;
 use App\DTO\UpdateUserDTO;
 use App\Entity\Order;
 use App\Entity\OrderProduct;
@@ -15,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -37,6 +39,16 @@ class OrderController extends AbstractController
                     'date:read',
                 ]
             ]
+        );
+    }
+
+    #[Route('/all', name: 'api_get_orders', methods: ['GET'], format: 'json')]
+    public function getOrders(OrderRepository $orderRepository, #[MapQueryString] ?PaginationDTO $paginationDTO = new PaginationDTO()): Response
+    {
+        $orders = $orderRepository->getOrders($paginationDTO);
+
+        return $this->json(
+            $orders
         );
     }
 

@@ -61,7 +61,10 @@ const AuthProvider = ({ children }: Props) => {
                             ),
                         }
                         setUser(user)
-                        setIsAdmin(user.roles.includes(Roles.ROLE_ADMIN))
+                        setIsAdmin(
+                            user.roles.includes(Roles.ROLE_ADMIN) ||
+                                user.roles.includes(Roles.ROLE_SUPER_ADMIN)
+                        )
                     } else {
                         console.error(`Server responded with status: ${response.status}`)
                         if (response.status === 401) {

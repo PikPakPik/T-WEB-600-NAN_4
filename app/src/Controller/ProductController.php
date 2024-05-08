@@ -6,6 +6,7 @@ use App\DTO\PaginationDTO;
 use App\DTO\ProductDTO;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -49,9 +50,14 @@ class ProductController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function createProduct(
         #[MapRequestPayload] ProductDTO $productdto,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        CategoryRepository $categoryRepository
     ): Response {
         $product = new Product();
+
+        $category = $categoryRepository->find($productdto->category);
+
+        $product->setCategory($category);
         $product->withObject($productdto);
         $entityManager->persist($product);
         $entityManager->flush();

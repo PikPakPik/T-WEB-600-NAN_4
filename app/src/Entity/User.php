@@ -28,13 +28,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'cart:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups(['user:read', 'cart:read'])]
-    private ?string $firstname = null;
+    private ?string $login = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Groups(['user:read', 'cart:read'])]
-    private ?string $lastname = null;
+    private ?string $firstName = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups(['user:read', 'cart:read'])]
+    private ?string $lastName = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Groups(['user:read', 'cart:read'])]
@@ -70,9 +74,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
+    public function getLogin(): ?string
+    {
+        return $this->login;
+    }
+
+    /**
+     * @param string|null $login
+     * @return void
+     */
+    public function setLogin(?string $login): void
+    {
+        $this->login = $login;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getFirstname(): ?string
     {
-        return $this->firstname;
+        return $this->firstName;
     }
 
     /**
@@ -81,7 +102,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setFirstname(?string $firstname): void
     {
-        $this->firstname = $firstname;
+        $this->firstName = $firstname;
     }
 
     /**
@@ -89,7 +110,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getLastname(): ?string
     {
-        return $this->lastname;
+        return $this->lastName;
     }
 
     /**
@@ -98,7 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setLastname(?string $lastname): void
     {
-        $this->lastname = $lastname;
+        $this->lastName = $lastname;
     }
 
     /**

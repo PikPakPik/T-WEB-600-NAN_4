@@ -1,19 +1,6 @@
 import { Category } from '@/common/types/Category'
 import { Product } from '@/common/types/Product'
-import {
-    Box,
-    Button,
-    Checkbox,
-    FormControlLabel,
-    FormGroup,
-    Input,
-    List,
-    MenuItem,
-    Modal,
-    Select,
-    TextField,
-    Typography,
-} from '@mui/material'
+import { Box, Button, FormGroup, MenuItem, Modal, TextField, Typography } from '@mui/material'
 import React from 'react'
 
 const style = {
@@ -40,6 +27,7 @@ const ModalUpsertProduct = ({
     onProductChange: (product: Product) => void
 }) => {
     const [categories, setCategories] = React.useState<Category[]>([])
+    const [selectedCategoryId, setSelectedCategoryId] = React.useState<number | null>(null)
 
     React.useEffect(() => {
         fetch(`${process.env.API_URL}/categories`)
@@ -55,7 +43,6 @@ const ModalUpsertProduct = ({
     }, [])
 
     const handleCreate = () => {
-        const category = document.getElementById('select') as HTMLSelectElement
         const name = document.getElementById('name') as HTMLInputElement
         const description = document.getElementById('description') as HTMLInputElement
         const photo = document.getElementById('photo') as HTMLInputElement
@@ -71,14 +58,14 @@ const ModalUpsertProduct = ({
                 Authorization: `Bearer ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify({
-                category: category.value,
+                category: selectedCategoryId,
                 name: name.value,
                 description: description.value,
                 photo: photo.value,
-                price: price.value,
-                discount: discount.value,
+                price: parseFloat(price.value),
+                discount: discount.value ? parseInt(discount.value) : 0,
                 active: active.checked,
-                stock: stock.value,
+                stock: parseInt(stock.value),
             }),
         })
             .then((response) => {
@@ -93,7 +80,43 @@ const ModalUpsertProduct = ({
             })
     }
 
-    const handleEdit = () => {}
+    const handleEdit = () => {
+        const name = document.getElementById('name') as HTMLInputElement
+        const description = document.getElementById('description') as HTMLInputElement
+        const photo = document.getElementById('photo') as HTMLInputElement
+        const price = document.getElementById('price') as HTMLInputElement
+        const discount = document.getElementById('discount') as HTMLInputElement
+        const active = document.getElementById('active') as HTMLInputElement
+        const stock = document.getElementById('stock') as HTMLInputElement
+
+        fetch(`${process.env.API_URL}/products/${data?.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({
+                category: selectedCategoryId,
+                name: name.value,
+                description: description.value,
+                photo: photo.value,
+                price: parseFloat(price.value),
+                discount: discount.value ? parseInt(discount.value) : 0,
+                active: active.checked,
+                stock: parseInt(stock.value),
+            }),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok')
+                }
+                return response.json()
+            })
+            .then((data) => {
+                handleClose()
+                onProductChange(data)
+            })
+    }
 
     return (
         <Modal
@@ -108,11 +131,11 @@ const ModalUpsertProduct = ({
                 </Typography>
                 <FormGroup style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     <TextField
-                        id="select"
+                        id="category"
                         select
                         label="Category"
-                        defaultValue="default"
-                        value={data?.category.id}
+                        defaultValue={data?.category.id || 'default'}
+                        onChange={(e) => setSelectedCategoryId(parseInt(e.target.value))}
                     >
                         <MenuItem value="default">
                             <em>None</em>
@@ -129,7 +152,7 @@ const ModalUpsertProduct = ({
                         type="text"
                         label="Name"
                         variant="outlined"
-                        value={data?.name}
+                        defaultValue={data?.name}
                         required
                     />
                     <TextField
@@ -138,7 +161,7 @@ const ModalUpsertProduct = ({
                         type="text"
                         label="Description"
                         variant="outlined"
-                        value={data?.description}
+                        defaultValue={data?.description}
                     />
                     <TextField
                         id="photo"
@@ -146,7 +169,7 @@ const ModalUpsertProduct = ({
                         type="text"
                         label="Photo"
                         variant="outlined"
-                        value={data?.photo}
+                        defaultValue={data?.photo}
                     />
                     <TextField
                         id="price"
@@ -154,7 +177,7 @@ const ModalUpsertProduct = ({
                         type="number"
                         label="Price"
                         variant="outlined"
-                        value={data?.price}
+                        defaultValue={data?.price}
                         required
                     />
                     <TextField
@@ -163,7 +186,7 @@ const ModalUpsertProduct = ({
                         type="number"
                         label="Discount"
                         variant="outlined"
-                        value={data?.discount}
+                        defaultValue={data?.discount}
                     />
                     <TextField
                         id="active"
@@ -171,7 +194,7 @@ const ModalUpsertProduct = ({
                         type="checkbox"
                         label="Active"
                         variant="outlined"
-                        value={data?.active}
+                        defaultValue={data?.active}
                         required
                     />
                     <TextField
@@ -180,7 +203,7 @@ const ModalUpsertProduct = ({
                         type="number"
                         label="Stock"
                         variant="outlined"
-                        value={data?.stock}
+                        defaultValue={data?.stock}
                         required
                     />
                     <Button

@@ -34,7 +34,7 @@ function ResponsiveAppBar() {
         { name: 'Register', link: '/register' },
     ]
 
-    if (user?.roles.includes(Roles.ROLE_ADMIN)) {
+    if (user?.roles.includes(Roles.ROLE_ADMIN) || user?.roles.includes(Roles.ROLE_SUPER_ADMIN)) {
         settingsConnected.push({ name: 'Admin', link: '/admin' })
     }
     const [cartItemCount, setCartItemCount] = React.useState<number>(0)

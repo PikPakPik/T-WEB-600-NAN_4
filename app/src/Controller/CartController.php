@@ -133,10 +133,10 @@ class CartController extends AbstractController
             $entityManager->persist($cart);
             $entityManager->flush();
         }
+      
+        $entityManager->persist($cart);
+        $entityManager->flush();
 
-            $entityManager->persist($cart);
-            $entityManager->flush();
-        }
         $orderProduct = $cart->getProducts()->filter(function (OrderProduct $orderProduct) use ($product) {
             return $orderProduct->getProduct()->getId() === $product->getId();
         })->first();

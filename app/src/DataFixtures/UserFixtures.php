@@ -38,7 +38,7 @@ class UserFixtures extends Fixture
         $devadmin->setLastname('devadmin');
         $devadmin->setEmail('devadmin@epitech.eu');
         $devadmin->setPassword("Ep1t3ch@admin");
-        $devadmin->setRoles(['ROLE_ADMIN']);
+        $devadmin->setRoles(['ROLE_SUPER_ADMIN', 'ROLE_ADMIN']);
         $manager->persist($devadmin);
 
         $devuser = new User();
@@ -46,6 +46,7 @@ class UserFixtures extends Fixture
         $devuser->setLastname('devuser');
         $devuser->setEmail('devuser@epitech.eu');
         $devuser->setPassword("Ep1t3ch@user");
+        $manager->persist($devuser);
 
 
         $manager->flush();

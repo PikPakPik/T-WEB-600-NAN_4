@@ -12,11 +12,12 @@ import { AuthProvider } from './auth'
 import ResponsiveDrawer from './common/Layout/panel/Layout'
 import { useAuth } from './common/hooks/useAuth'
 import HomePanel from './pages/panel'
-import CategoriesPanel from './pages/panel/category'
+import CategoriesPanel from './pages/panel/categories'
 import ProductsTable from './pages/panel/products'
 import UsersPanel from './pages/panel/users'
 import { useState } from 'react'
 import { MyGlobalCartContext } from './common/context/CartContext'
+import OrdersPanel from './pages/panel/orders'
 
 function ProtectedRoute({ children }: any) {
     const auth = useAuth()
@@ -123,6 +124,7 @@ function App() {
                                     <Route path="products" element={<ProductsTable />} />
                                     <Route path="categories" element={<CategoriesPanel />} />
                                     <Route path="users" element={<UsersPanel />} />
+                                    <Route path="orders" element={<OrdersPanel />} />
                                     <Route path="*" element={<HomePanel />} />
                                 </Route>
                             </Route>

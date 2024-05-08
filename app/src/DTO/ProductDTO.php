@@ -16,6 +16,15 @@ class ProductDTO
     #[Assert\NotBlank]
     public float $price;
 
+    #[Assert\NotBlank]
+    public int $stock;
+
+    public int $discount = 0;
+
+    #[Assert\NotBlank]
+    public int $category;
+
+    public bool $active;
     /**
      * @return string
      */
@@ -46,5 +55,38 @@ class ProductDTO
     public function getPrice(): float
     {
         return $this->price;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity(): int
+    {
+        return $this->stock;
+    }
+
+
+    /**
+     * @return int
+     */
+    public function getDiscount(): int
+    {
+        return $this->discount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCategoryId(): int
+    {
+        return $this->category;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getActive(): bool
+    {
+        return $this->active;
     }
 }

@@ -41,6 +41,7 @@ class Order
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[Groups(['orderall:read'])]
     private ?User $owner = null;
 
 

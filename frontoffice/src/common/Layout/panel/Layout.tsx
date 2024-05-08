@@ -3,6 +3,7 @@ import { AccountCircle, ArrowBack } from '@mui/icons-material'
 import InventoryIcon from '@mui/icons-material/Inventory'
 import MenuIcon from '@mui/icons-material/Menu'
 import InboxIcon from '@mui/icons-material/MoveToInbox'
+import OrderIcon from '@mui/icons-material/Receipt'
 import UserIcon from '@mui/icons-material/PeopleAlt'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
@@ -80,6 +81,11 @@ export default function ResponsiveDrawer(props: Props) {
             text: 'Users',
             link: '/admin/users',
             icon: <UserIcon />,
+        },
+        {
+            text: 'Order',
+            link: '/admin/orders',
+            icon: <OrderIcon />,
         },
     ]
 
