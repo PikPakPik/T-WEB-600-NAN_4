@@ -121,6 +121,7 @@ Enjoy the app!
 ![](https://img.shields.io/badge/React-ED8B00?style=for-the-badge&logo=react&color=20232a)
 ![](https://img.shields.io/badge/Docker-ED8B00?style=for-the-badge&logo=docker&color=20232a)
 ![](https://img.shields.io/badge/Nginx-ED8B00?style=for-the-badge&logo=nginx&color=20232a)
+![](https://img.shields.io/badge/Swagger-ED8B00?style=for-the-badge&logo=swagger&color=20232a)
 
 ## Authors
 

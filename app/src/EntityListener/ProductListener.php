@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\EntityListener;
 
 use App\Entity\Product;
@@ -13,7 +11,6 @@ use Doctrine\ORM\Events;
 #[AsEntityListener(event: Events::preUpdate, method: 'onPreUpdate', entity: Product::class)]
 readonly class ProductListener
 {
-
     /**
      * @param Product $product
      * @return void

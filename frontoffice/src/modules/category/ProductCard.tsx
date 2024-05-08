@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
-import { Category } from '@/common/types/Category'
+import { Product } from '@/common/types/Product'
 
-const CategoryCard = (props: Category) => {
+const ProductCard = (props: Product) => {
     return (
         <>
             <Box
@@ -30,7 +30,7 @@ const CategoryCard = (props: Category) => {
                 }}
             >
                 <img
-                    src={props.image}
+                    src={props.photo}
                     alt="processors"
                     style={{
                         cursor: 'pointer',
@@ -62,4 +62,4 @@ const CategoryCard = (props: Category) => {
     )
 }
 
-export default CategoryCard
+export default ProductCard

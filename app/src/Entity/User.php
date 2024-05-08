@@ -6,6 +6,8 @@ use App\EntityListener\UserListener;
 use App\Repository\UserRepository;
 use App\Trait\DateTimeImmutableTrait;
 use App\Trait\DtoHydratorTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -23,19 +25,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'cart:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Groups(['user:read'])]
-    private ?string $firstname = null;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Groups(['user:read', 'cart:read'])]
+    private ?string $login = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Groups(['user:read'])]
-    private ?string $lastname = null;
+    #[Groups(['user:read', 'cart:read'])]
+    private ?string $firstName = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups(['user:read', 'cart:read'])]
+    private ?string $lastName = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'cart:read'])]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
@@ -43,8 +49,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /** @var string[] $roles */
     #[ORM\Column(type: Types::JSON)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'cart:read'])]
     private array $roles = [];
+
+    /**
+     * @var Collection<int, Order>
+     */
+    #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'owner')]
+    private Collection $orders;
+
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+    }
 
     /**
      * @return int|null
@@ -57,9 +74,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return string|null
      */
+    public function getLogin(): ?string
+    {
+        return $this->login;
+    }
+
+    /**
+     * @param string|null $login
+     * @return void
+     */
+    public function setLogin(?string $login): void
+    {
+        $this->login = $login;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getFirstname(): ?string
     {
-        return $this->firstname;
+        return $this->firstName;
     }
 
     /**
@@ -68,7 +102,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setFirstname(?string $firstname): void
     {
-        $this->firstname = $firstname;
+        $this->firstName = $firstname;
     }
 
     /**
@@ -76,7 +110,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getLastname(): ?string
     {
-        return $this->lastname;
+        return $this->lastName;
     }
 
     /**
@@ -85,7 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setLastname(?string $lastname): void
     {
-        $this->lastname = $lastname;
+        $this->lastName = $lastname;
     }
 
     /**
@@ -162,5 +196,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    public function getOrders(): Collection
+    {
+        return $this->orders;
+    }
+
+    public function addOrder(Order $order): static
+    {
+        if (!$this->orders->contains($order)) {
+            $this->orders->add($order);
+            $order->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrder(Order $order): static
+    {
+        if ($this->orders->removeElement($order)) {
+            // set the owning side to null (unless already changed)
+            if ($order->getOwner() === $this) {
+                $order->setOwner(null);
+            }
+        }
+
+        return $this;
     }
 }

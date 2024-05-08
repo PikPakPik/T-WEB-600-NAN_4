@@ -11,14 +11,43 @@ import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
+import { useAuth } from '../hooks/useAuth'
+import { useNavigate } from 'react-router-dom'
+import { Roles } from '../types/Roles'
+import CartButton from '@/common/Layout/CartButton'
+import Cart from '@/common/cart/Cart'
 
 const pages = ['Products', 'About us', 'Contact us']
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
+    const { user, handleLogout } = useAuth()
+    const navigate = useNavigate()
 
+    const settingsConnected = [
+        { name: 'Profile', link: '/profile' },
+        { name: 'Logout', link: handleLogout },
+    ]
+    const settingsDisconnected = [
+        { name: 'Login', link: '/login' },
+        { name: 'Register', link: '/register' },
+    ]
+
+    if (user?.roles.includes(Roles.ROLE_ADMIN) || user?.roles.includes(Roles.ROLE_SUPER_ADMIN)) {
+        settingsConnected.push({ name: 'Admin', link: '/admin' })
+    }
+    const [cartItemCount, setCartItemCount] = React.useState<number>(0)
+
+    const [isCartOpen, setIsCartOpen] = React.useState(false)
+
+    const handleOpenCart = () => {
+        setIsCartOpen(true)
+    }
+
+    const handleCloseCart = () => {
+        setIsCartOpen(false)
+    }
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget)
     }
@@ -123,9 +152,16 @@ function ResponsiveAppBar() {
                         ))}
                     </Box>
                     <Box sx={{ flexGrow: 0 }}>
+                        <Box onClick={handleOpenCart}>
+                            <CartButton itemCount={cartItemCount} />
+                        </Box>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                {user ? (
+                                    <Avatar alt="Remy Sharp" src={user.firstName} />
+                                ) : (
+                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                )}
                             </IconButton>
                         </Tooltip>
                         <Menu
@@ -144,15 +180,36 @@ function ResponsiveAppBar() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
+                            {user
+                                ? settingsConnected.map((setting) => (
+                                      <MenuItem
+                                          key={setting.name}
+                                          onClick={handleCloseUserMenu}
+                                          onClickCapture={() => {
+                                              if (typeof setting.link === 'string') {
+                                                  navigate(setting.link)
+                                              } else if (setting.link === handleLogout) {
+                                                  setting.link()
+                                              }
+                                          }}
+                                      >
+                                          <Typography textAlign="center">{setting.name}</Typography>
+                                      </MenuItem>
+                                  ))
+                                : settingsDisconnected.map((setting) => (
+                                      <MenuItem
+                                          key={setting.name}
+                                          onClick={handleCloseUserMenu}
+                                          onClickCapture={() => navigate(setting.link)}
+                                      >
+                                          <Typography textAlign="center">{setting.name}</Typography>
+                                      </MenuItem>
+                                  ))}
                         </Menu>
                     </Box>
                 </Toolbar>
             </Container>
+            <Cart isOpen={isCartOpen} handleClose={handleCloseCart} />
         </AppBar>
     )
 }
