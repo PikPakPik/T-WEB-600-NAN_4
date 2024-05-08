@@ -123,7 +123,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"heber.wolff@goldner.com\",\r\n    \"password\": \"azertyuiop\"\r\n}",
+							"raw": "{\r\n    \"email\": \"devadmin@epitech.eu\",\r\n    \"password\": \"Ep1t3ch@admin\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -255,7 +255,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "1",
+									"uuid": "04944371-a9df-448c-86d9-0aaa98721f76"
 								}
 							]
 						}
@@ -293,6 +294,11 @@
 								{
 									"key": "price",
 									"value": "{{$randomPrice}}",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "",
 									"type": "text"
 								}
 							]
@@ -360,7 +366,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "13"
+									"value": "13",
+									"uuid": "b13c2ece-d0b4-40b3-9a69-d4cc4b610ef5"
 								}
 							]
 						}
@@ -396,7 +403,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "12"
+									"value": "12",
+									"uuid": "d972e926-4a78-46a2-8c4f-8d8911166dcc"
 								}
 							]
 						}
@@ -475,7 +483,8 @@
 							"variable": [
 								{
 									"key": "productId",
-									"value": "2"
+									"value": "1",
+									"uuid": "91c919d6-6a9c-423f-ab8c-5cc3f7a93cb2"
 								}
 							]
 						}
@@ -520,7 +529,8 @@
 							"variable": [
 								{
 									"key": "productId",
-									"value": "2"
+									"value": "2",
+									"uuid": "7c4f6f08-3afd-43db-8e3d-c9ee7e44fa25"
 								}
 							]
 						}
@@ -545,7 +555,8 @@
 							{
 								"key": "Content-Length",
 								"value": "0",
-								"type": "text"
+								"type": "text",
+								"uuid": "7136887c-62ba-40de-b7ca-aafc0c74e3c8"
 							}
 						],
 						"url": {
@@ -592,7 +603,8 @@
 							"variable": [
 								{
 									"key": "productId",
-									"value": "77d38409-9070-4b36-a222-b9c602afc366"
+									"value": "77d38409-9070-4b36-a222-b9c602afc366",
+									"uuid": "90ee4504-cb23-427e-a268-27d733590ac6"
 								}
 							]
 						}
@@ -604,6 +616,50 @@
 		{
 			"name": "Orders",
 			"item": [
+				{
+					"name": "Pay order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{login_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Length",
+								"value": "0",
+								"uuid": "34c1dc42-3a9b-4ad5-9c5e-b5bf89c6c1f1"
+							}
+						],
+						"url": {
+							"raw": "http://localhost/api/orders/:id/pay",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"orders",
+								":id",
+								"pay"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "11",
+									"uuid": "bfa6f26b-1c4d-46af-8ac2-ffae821950ac"
+								}
+							]
+						}
+					},
+					"response": []
+				},
 				{
 					"name": "Get orders",
 					"request": {
@@ -628,6 +684,36 @@
 							"path": [
 								"api",
 								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{login_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/api/orders/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"orders",
+								"all"
 							]
 						}
 					},
@@ -662,7 +748,8 @@
 							"variable": [
 								{
 									"key": "orderId",
-									"value": "a87a0b7c-4886-4344-b16b-82ce6bb4beb3"
+									"value": "a87a0b7c-4886-4344-b16b-82ce6bb4beb3",
+									"uuid": "d4f8aeaf-3b7e-4cce-b8ba-de43e233203c"
 								}
 							]
 						}
@@ -712,7 +799,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "1",
+									"uuid": "60ec558d-22ec-4b15-98c1-3d1d1e9c4896"
 								}
 							]
 						}
@@ -738,7 +826,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "1",
+									"uuid": "0246d441-c89c-4b69-955d-ce8ea89c1064"
 								}
 							]
 						}
@@ -857,7 +946,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "1"
+									"value": "1",
+									"uuid": "d3d29f8c-6ef3-4610-8c17-544f7da74353"
 								}
 							]
 						}
@@ -893,7 +983,8 @@
 							"variable": [
 								{
 									"key": "id",
-									"value": "23"
+									"value": "23",
+									"uuid": "1aad3b56-d47e-4a4f-9afd-8cddf92a2258"
 								}
 							]
 						}
