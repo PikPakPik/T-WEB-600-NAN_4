@@ -4,24 +4,27 @@ namespace App\DTO;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UpdateUserDTO
+class UserDTO
 {
-    #[Assert\NotBlank]
-    public string $firstname;
+    public string $login;
 
     #[Assert\NotBlank]
-    public string $lastname;
+    public string $firstName;
+
+    #[Assert\NotBlank]
+    public string $lastName;
 
     #[Assert\NotBlank]
     #[Assert\Email]
     public string $email;
+
 
     /**
      * @return string
      */
     public function getFirstname(): string
     {
-        return $this->firstname;
+        return $this->firstName;
     }
 
     /**
@@ -29,7 +32,7 @@ class UpdateUserDTO
      */
     public function getLastname(): string
     {
-        return $this->lastname;
+        return $this->lastName;
     }
 
     /**
@@ -38,5 +41,13 @@ class UpdateUserDTO
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogin(): string
+    {
+        return $this->login;
     }
 }

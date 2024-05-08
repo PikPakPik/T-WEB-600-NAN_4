@@ -1,6 +1,67 @@
 import { Box, Button, Link, TextField, Typography } from '@mui/material'
+import { FormEvent, useContext, useState } from 'react'
+import Swal from 'sweetalert2'
+import { AuthContext } from '@/auth'
 
 const LoginPage = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const { handleLogin } = useContext(AuthContext)
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault()
+
+        // Construct the body data
+        const formData = {
+            email: email,
+            password: password,
+        }
+
+        try {
+            Swal.fire({
+                title: 'Processing',
+                html: 'Please wait...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading()
+                },
+            })
+            const response = await fetch(`${process.env.API_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+
+            const data = await response.json()
+
+            if (response.ok) {
+                Swal.close()
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login successful',
+                    showConfirmButton: false,
+                    timer: 1500,
+                })
+                handleLogin(data.token)
+
+                window.location.href = '/'
+            } else {
+                Swal.close()
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login failed',
+                    text: data.message || 'Invalid username/password supplied',
+                })
+            }
+        } catch (error) {
+            console.error('Error:', error)
+        }
+    }
+
     return (
         <>
             <Box
@@ -38,14 +99,14 @@ const LoginPage = () => {
                 >
                     Login
                 </Typography>
-                <Box
-                    component="form"
-                    sx={{
+                <form
+                    onSubmit={handleSubmit}
+                    style={{
                         display: 'flex',
                         flexDirection: 'column',
                         gap: 2,
                         margin: 'auto',
-                        mt: 4,
+                        marginTop: 4,
                     }}
                 >
                     <TextField
@@ -57,6 +118,8 @@ const LoginPage = () => {
                         InputLabelProps={{
                             style: { color: 'black' },
                         }}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {
@@ -77,6 +140,8 @@ const LoginPage = () => {
                         type="password"
                         required
                         fullWidth
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                         InputLabelProps={{
                             style: { color: 'black' },
                         }}
@@ -118,7 +183,7 @@ const LoginPage = () => {
                             Don't have an account? <Link href="/register">Sign up</Link>
                         </Typography>
                     </Box>
-                </Box>
+                </form>
             </Box>
         </>
     )

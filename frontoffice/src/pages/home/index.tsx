@@ -1,6 +1,6 @@
 import CategoryCards from '@/modules/home/components/CategoryCard'
-import { Box, Button, Grid, Typography } from '@mui/material'
-import categories from '@/common/fakeData/categories.json'
+import { Box, Button, Grid, Skeleton, Typography } from '@mui/material'
+import { Category } from '@/common/types/Category'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules'
 import { useMediaQuery } from '@mui/material'
 import ExtensionIcon from '@mui/icons-material/Extension'
@@ -17,11 +17,48 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import 'swiper/css/scrollbar'
 import '@/modules/home/styles/swiper-style.css'
+import { useEffect, useState } from 'react'
 
 const Homepage = () => {
+    const [categories, setCategories] = useState<Category[]>([])
     const isXS = useMediaQuery('(max-width: 600px)')
     const isMD = useMediaQuery('(max-width: 900px)')
     const navigate = useNavigate()
+    const [isCategoriesLoading, setIsCategoriesLoading] = useState<boolean>(false)
+
+    const fetchCategories = async () => {
+        try {
+            setIsCategoriesLoading(true)
+            const response = await fetch(`${process.env.API_URL}/categories`)
+            const data = await response.json()
+            if (response.ok) {
+                setIsCategoriesLoading(false)
+                const activeCategories = data.items.filter((category: Category) => category.active)
+                activeCategories.forEach(
+                    (category: Category) =>
+                        (category.image =
+                            'https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg')
+                )
+
+                setCategories(activeCategories)
+            } else {
+                console.error(data.message)
+            }
+        } catch (error) {
+            console.error('Error:', error)
+        }
+    }
+    useEffect(() => {
+        fetchCategories()
+    }, [])
+    const handleCategoryClick = (category: Category) => {
+        navigate(`/category/${category.id}`, {
+            state: {
+                categoryName: category.name,
+                categoryImage: category.image,
+            },
+        })
+    }
 
     return (
         <>
@@ -155,28 +192,66 @@ const Homepage = () => {
                 >
                     Our Products:
                 </Typography>
-                <Swiper
-                    modules={[Navigation, Pagination, Scrollbar, A11y]}
-                    spaceBetween={30}
-                    slidesPerView={isXS ? 1 : isMD ? 2 : 3}
-                    navigation
-                    pagination={{ clickable: true }}
-                    scrollbar={{ draggable: true }}
-                    style={{ padding: '0rem 5rem 2rem 5rem', gap: '1rem' }}
-                >
-                    {categories.map((category) => (
-                        <SwiperSlide
-                            key={category.id}
-                            onClick={() => navigate(`/category/${category.id}`)}
-                        >
-                            <CategoryCards
-                                id={category.id}
-                                name={category.name}
-                                image={category.image}
+                {isCategoriesLoading ? (
+                    <Swiper
+                        modules={[Navigation, Pagination, Scrollbar, A11y]}
+                        spaceBetween={30}
+                        slidesPerView={isXS ? 1 : isMD ? 2 : 3}
+                        navigation
+                        pagination={{ clickable: true }}
+                        scrollbar={{ draggable: true }}
+                        style={{ padding: '0rem 5rem 2rem 5rem', gap: '1rem' }}
+                    >
+                        <SwiperSlide>
+                            <Skeleton
+                                variant="rectangular"
+                                width={250}
+                                height={250}
+                                sx={{ background: 'lightgray', borderRadius: '1rem' }}
                             />
                         </SwiperSlide>
-                    ))}
-                </Swiper>
+                        <SwiperSlide>
+                            <Skeleton
+                                variant="rectangular"
+                                width={250}
+                                height={250}
+                                sx={{ background: 'lightgray', borderRadius: '1rem' }}
+                            />
+                        </SwiperSlide>
+                        <SwiperSlide>
+                            <Skeleton
+                                variant="rectangular"
+                                width={250}
+                                height={250}
+                                sx={{ background: 'lightgray', borderRadius: '1rem' }}
+                            />
+                        </SwiperSlide>
+                    </Swiper>
+                ) : (
+                    <Swiper
+                        modules={[Navigation, Pagination, Scrollbar, A11y]}
+                        spaceBetween={30}
+                        slidesPerView={isXS ? 1 : isMD ? 2 : 3}
+                        navigation
+                        pagination={{ clickable: true }}
+                        scrollbar={{ draggable: true }}
+                        style={{ padding: '0rem 5rem 2rem 5rem', gap: '1rem' }}
+                    >
+                        {categories.map((category) => (
+                            <SwiperSlide
+                                key={category.id}
+                                onClick={() => handleCategoryClick(category)}
+                            >
+                                <CategoryCards
+                                    id={category.id}
+                                    name={category.name}
+                                    image={category.image}
+                                    // change the image from the backend
+                                />
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                )}
             </Box>
             <Box>
                 <Grid
