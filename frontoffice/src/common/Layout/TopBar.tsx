@@ -42,7 +42,11 @@ function ResponsiveAppBar() {
     const [isCartOpen, setIsCartOpen] = React.useState(false)
 
     const handleOpenCart = () => {
-        setIsCartOpen(true)
+        if (user) {
+            setIsCartOpen(true)
+        } else {
+            navigate('/login')
+        }
     }
 
     const handleCloseCart = () => {

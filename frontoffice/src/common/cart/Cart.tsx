@@ -7,8 +7,11 @@ import {
     Button,
     Typography,
     Box,
+    IconButton,
 } from '@mui/material'
-import { MyGlobalCartContext, useGlobalCartContext } from '@/common/context/CartContext'
+import { MyGlobalCartContext } from '@/common/context/CartContext'
+import DeleteIcon from '@mui/icons-material/Delete'
+import Swal from 'sweetalert2'
 
 interface CartComponentProps {
     isOpen: boolean
@@ -44,22 +47,114 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
         fetchCartItems()
     }, [])
 
+    const handleDecreaseQuantity = async (item) => {
+        // Check if the quantity is already 1
+        if (item.quantity > 1) {
+            const updatedQuantity = item.quantity - 1
+            const response = await fetch(`${process.env.API_URL}/carts/${item.product.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                },
+                body: JSON.stringify({ quantity: updatedQuantity }),
+            })
+            if (!response.ok) {
+                Swal.fire({
+                    title: 'Failed to update quantity',
+                    text: 'Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'Close',
+                })
+                return
+            }
+
+            const updatedCart = cart.map((cartItem) =>
+                cartItem.product.id === item.product.id
+                    ? { ...cartItem, quantity: updatedQuantity }
+                    : cartItem
+            )
+            setCart(updatedCart)
+        }
+    }
+
+    const handleIncreaseQuantity = async (item) => {
+        const updatedQuantity = item.quantity + 1
+        const response = await fetch(`${process.env.API_URL}/carts/${item.product.id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify({ quantity: updatedQuantity }),
+        })
+        if (!response.ok) {
+            Swal.fire({
+                title: 'Failed to update quantity',
+                text: 'Please try again.',
+                icon: 'error',
+                confirmButtonText: 'Close',
+            })
+            return
+        }
+
+        const updatedCart = cart.map((cartItem) =>
+            cartItem.product.id === item.product.id
+                ? { ...cartItem, quantity: updatedQuantity }
+                : cartItem
+        )
+        setCart(updatedCart)
+    }
+
+
+    const handleDeleteItem = async (item) => {
+        const updatedCart = cart.filter((cartItem) => cartItem.product.id !== item.product.id)
+        
+        setCart(updatedCart)
+    }
+
     const renderCartItems = () => {
         if (cart.length === 0) {
             return <Typography variant="body1">Your cart is empty</Typography>
         } else {
             return (
-                <>
+                <Box sx={{}}>
                     {cart.map((item) => (
-                        <Box key={item.product.id}>
-                            <Typography>{item.product.name}</Typography>
-                            <Typography>Price: ${item.buyPrice * item.quantity}</Typography>
-                            <Typography>Quantity: {item.quantity}</Typography>
-                            <hr />
+                        <Box
+                            key={item.product.id}
+                            sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}
+                        >
+                            <img
+                                src={item.product.photo}
+                                alt={item.product.name}
+                                style={{ width: 100, marginRight: 2 }}
+                            />
+                            <Box>
+                                <Typography variant="h6">{item.product.name}</Typography>
+                                <Typography>Price: ${item.buyPrice * item.quantity}</Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => handleDecreaseQuantity(item)}
+                                    >
+                                        -
+                                    </Button>
+                                    <Typography>{item.quantity}</Typography>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={() => handleIncreaseQuantity(item)}
+                                    >
+                                        +
+                                    </Button>
+                                    <IconButton onClick={() => handleDeleteItem(item)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Box>
+                            </Box>
                         </Box>
                     ))}
                     <Typography>Total Items: {cart.length}</Typography>
-                </>
+                </Box>
             )
         }
     }

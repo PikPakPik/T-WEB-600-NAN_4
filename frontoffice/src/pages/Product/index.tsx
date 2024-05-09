@@ -9,9 +9,12 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange'
 import ShieldIcon from '@mui/icons-material/Shield'
+import { useAuth } from '@/common/hooks/useAuth'
 import Swal from 'sweetalert2'
 
 const ProductPage = () => {
+    const { user } = useAuth()
+
     const location = useLocation()
     const [ProductImages, setProductImages] = useState([
         'https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg',
@@ -56,41 +59,58 @@ const ProductPage = () => {
     }, [])
     const addTocartBtn = async () => {
         try {
-            Swal.fire({
-                title: 'Processing',
-                html: 'Please wait...',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                showConfirmButton: false,
-                willOpen: () => {
-                    Swal.showLoading()
-                },
-            })
-            const response = await fetch(`${process.env.API_URL}/carts/${currentProduct.id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-                body: JSON.stringify({
-                    quantity: quantity,
-                }),
-            })
-            if (response.ok) {
-                Swal.close()
+            if (user) {
                 Swal.fire({
-                    title: 'Done!',
-                    text: currentProduct.name + ' is now in your cart.',
-                    icon: 'success',
-                    confirmButtonText: 'Okay!',
+                    title: 'Processing',
+                    html: 'Please wait...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading()
+                    },
                 })
-            } else {
-                Swal.close()
+                const response = await fetch(`${process.env.API_URL}/carts/${currentProduct.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({
+                        quantity: quantity,
+                    }),
+                })
+                if (response.ok) {
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Done!',
+                        text: currentProduct.name + ' is now in your cart.',
+                        icon: 'success',
+                        confirmButtonText: 'Okay!',
+                    })
+                } else {
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Error!',
+                        text:
+                            'An error occured while adding ' +
+                            currentProduct.name +
+                            ' to your cart.',
+                        icon: 'error',
+                        confirmButtonText: 'Okay!',
+                    })
+                }
+            }
+            else {
                 Swal.fire({
                     title: 'Error!',
-                    text: 'An error occured while adding ' + currentProduct.name + ' to your cart.',
+                    text: 'You need to be logged in to add products to your cart.',
                     icon: 'error',
                     confirmButtonText: 'Okay!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/login'
+                    }
                 })
             }
         } catch (error) {}
