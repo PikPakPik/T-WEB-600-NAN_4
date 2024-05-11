@@ -88,7 +88,7 @@ class OrderController extends AbstractController
                     'product_data' => [
                         'name' => $product->getProduct()->getName(),
                     ],
-                    'unit_amount' => $product->getBuyPrice(),
+                    'unit_amount' => round($product->getBuyPrice()),
                 ],
                 'quantity' => $product->getQuantity(),
             ];
