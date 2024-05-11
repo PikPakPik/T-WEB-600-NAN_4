@@ -175,6 +175,7 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
                 })
+                const stripeURL = await stripRes.json()
                 if (!stripRes.ok) {
                     Swal.close()
                     Swal.fire({
@@ -198,6 +199,7 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
                 }).then((result) => {
                     setIsOpenCart(true)
                     if (result.isConfirmed) {
+                        window.location.href = stripeURL.url
                     }
                 })
             }
