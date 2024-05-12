@@ -127,6 +127,7 @@ const Homepage = () => {
                                 fontWeight: '700',
                                 color: 'white',
                             }}
+                            href="#productsBox"
                         >
                             Shop Now
                         </Button>
@@ -175,8 +176,9 @@ const Homepage = () => {
                             fontWeight: '700',
                             color: 'white',
                         }}
+                        onClick={() => navigate('/register')}
                     >
-                        Shop Now
+                        Join us
                     </Button>
                 </Box>
             </Box>
@@ -476,6 +478,7 @@ const Homepage = () => {
                                 fontWeight: '700',
                                 color: 'white',
                             }}
+                            onClick={() => navigate('/register')}
                         >
                             Join Now
                         </Button>

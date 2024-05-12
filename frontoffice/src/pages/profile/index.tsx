@@ -1,5 +1,5 @@
 import { useAuth } from '@/common/hooks/useAuth'
-import { Box, Button, Container, Link, TextField, Typography } from '@mui/material'
+import { Box, Button, Container, TextField, Typography } from '@mui/material'
 import { FormEvent, useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
 
@@ -100,7 +100,7 @@ const ProfilePage = () => {
                     }}
                     src={
                         'https://img.freepik.com/free-photo/black-white-bokeh-particles_1017-3297.jpg?t=st=1715470361~exp=1715473961~hmac=f829f449bdc23e6c3f3c473823b52f3afc8fda5f3fdea30f3c4bd6288098c2a0&w=1380'
-                    } // change this from
+                    }
                 />
 
                 <Box

@@ -2,7 +2,6 @@ import { Product } from '@/common/types/Product'
 import { Box, Button, IconButton, Paper, Skeleton, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import MultiImageCatalog from '@/modules/product/categories/MultiImageCatalog'
 import RemoveIcon from '@mui/icons-material/Remove'
 import AddIcon from '@mui/icons-material/Add'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
@@ -16,10 +15,7 @@ const ProductPage = () => {
     const { user } = useAuth()
 
     const location = useLocation()
-    const [ProductImages, setProductImages] = useState([
-        'https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg',
-        'https://t3.ftcdn.net/jpg/00/81/24/72/240_F_81247213_OYvGTCn5mnQQ2c0gWJ1U5ixcbmNBaMOp.jpg',
-    ])
+   
     const { productfromState } = location.state || {}
     const [currentProduct, setCurrentProduct] = useState<Product>(productfromState)
     const { id } = useParams()
@@ -150,7 +146,7 @@ const ProductPage = () => {
                             height: '100%',
                             objectFit: 'cover',
                         }}
-                        src={currentProduct.photo}
+                        src="https://img.freepik.com/free-photo/black-white-bokeh-particles_1017-3297.jpg?t=st=1715470361~exp=1715473961~hmac=f829f449bdc23e6c3f3c473823b52f3afc8fda5f3fdea30f3c4bd6288098c2a0&w=1380"
                     />
 
                     <Box
@@ -198,7 +194,27 @@ const ProductPage = () => {
                 >
                     {currentProduct.name}
                 </Typography>
-                <MultiImageCatalog images={ProductImages} /> {/* currentProduct.images */}
+                <Box sx={{ flex: { xs: '100%', md: '70%' } }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            p: 2,
+                        }}
+                    >
+                        <img
+                            src={currentProduct.photo}
+                            alt="Main"
+                            style={{
+                                maxWidth: '100%',
+                                minHeight: '50vh',
+                                height: 'auto',
+                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.4)',
+                                borderRadius: '1rem',
+                            }}
+                        />
+                    </Box>
+                </Box>
                 <Box
                     sx={{
                         flex: { xs: '100%', sm: '70%' },

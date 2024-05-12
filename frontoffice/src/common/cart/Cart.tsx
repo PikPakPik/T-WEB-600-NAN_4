@@ -22,7 +22,6 @@ interface CartComponentProps {
 const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
     const { cart, setCart } = useContext(MyGlobalCartContext)
     const [isOpenCart, setIsOpenCart] = useState(false)
-    const [orderID, setOrderID] = useState(0)
     const [totalPrice, setTotalPrice] = useState(0)
     useEffect(() => {
         setIsOpenCart(isOpen)

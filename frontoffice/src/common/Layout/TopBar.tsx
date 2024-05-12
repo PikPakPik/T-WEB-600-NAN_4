@@ -26,7 +26,7 @@ const pages = [
 ]
 
 function ResponsiveAppBar() {
-    const { cart, setCart } = useContext(MyGlobalCartContext)
+    const { cart } = useContext(MyGlobalCartContext)
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
@@ -131,7 +131,11 @@ function ResponsiveAppBar() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page.text} onClick={handleCloseNavMenu}>
+                                <MenuItem
+                                    key={page.text}
+                                    onClick={handleCloseNavMenu}
+                                    href={page.link}
+                                >
                                     <Typography textAlign="center">{page.text}</Typography>
                                 </MenuItem>
                             ))}
