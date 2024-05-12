@@ -87,6 +87,8 @@ const ProductPage = () => {
                         text: currentProduct.name + ' is now in your cart.',
                         icon: 'success',
                         confirmButtonText: 'Okay!',
+                    }).then(() => {
+                        window.location.href = '/'
                     })
                 } else {
                     Swal.close()
@@ -100,8 +102,7 @@ const ProductPage = () => {
                         confirmButtonText: 'Okay!',
                     })
                 }
-            }
-            else {
+            } else {
                 Swal.fire({
                     title: 'Error!',
                     text: 'You need to be logged in to add products to your cart.',
@@ -176,19 +177,7 @@ const ProductPage = () => {
                     </Box>
                 </Box>
             )}
-            <Box sx={{ p: 2, mt: 2 }}>
-                <Typography
-                    variant="body1"
-                    sx={{
-                        color: 'black',
-                        textAlign: 'center',
-                        fontWeight: '700',
-                        fontSize: '1.5rem',
-                    }}
-                >
-                    {currentProduct.description}
-                </Typography>
-            </Box>
+            <Box sx={{ p: 2, mt: 2 }}></Box>
             <Box
                 sx={{
                     p: 2,
@@ -364,6 +353,17 @@ const ProductPage = () => {
             <Box sx={{ background: 'gray', p: 2, m: 1, borderRadius: '1rem', color: 'white' }}>
                 <Typography variant="h4" sx={{ fontWeight: '700' }}>
                     Product Specifications:
+                </Typography>
+                <Typography
+                    variant="body1"
+                    sx={{
+                        color: 'white',
+                        textAlign: 'center',
+                        fontWeight: '600',
+                        fontSize: '1.5rem',
+                    }}
+                >
+                    {currentProduct.description}
                 </Typography>
             </Box>
         </>

@@ -182,6 +182,7 @@ const Homepage = () => {
             </Box>
             <Box sx={{ backgroundColor: 'black', padding: '2rem' }}>
                 <Typography
+                    id="productsBox"
                     variant="h2"
                     sx={{
                         fontSize: { xs: '1.7rem', md: '2.2rem' },

@@ -12,9 +12,7 @@ import {
 import { MyGlobalCartContext } from '@/common/context/CartContext'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Swal from 'sweetalert2'
-import ProductCard from '@/modules/category/ProductCard'
-import { Update } from '@mui/icons-material'
-import { Product } from '../types/Product'
+
 
 interface CartComponentProps {
     isOpen: boolean
