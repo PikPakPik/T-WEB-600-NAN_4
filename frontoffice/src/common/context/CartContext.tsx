@@ -9,7 +9,7 @@ interface product {
     stock: number
 }
 
-interface CartProducts {
+export interface CartProducts {
     product: product
     quantity: number
     buyPrice: number
