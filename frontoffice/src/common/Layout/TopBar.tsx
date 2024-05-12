@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useContext } from 'react'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
@@ -15,11 +16,18 @@ import { useAuth } from '../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
 import { Roles } from '../types/Roles'
 import CartButton from '@/common/Layout/CartButton'
+import { MyGlobalCartContext } from '@/common/context/CartContext'
 import Cart from '@/common/cart/Cart'
 
-const pages = ['Products', 'About us', 'Contact us']
+const pages = [
+    { text: 'Products', link: '/#productsBox' },
+    { text: 'About us', link: '/about' },
+    { text: 'Contact us', link: '/contact' },
+]
 
 function ResponsiveAppBar() {
+    const { cart } = useContext(MyGlobalCartContext)
+
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
     const { user, handleLogout } = useAuth()
@@ -42,8 +50,16 @@ function ResponsiveAppBar() {
     const [isCartOpen, setIsCartOpen] = React.useState(false)
 
     const handleOpenCart = () => {
-        setIsCartOpen(true)
+        if (user) {
+            setIsCartOpen(true)
+        } else {
+            navigate('/login')
+        }
     }
+    React.useEffect(() => {
+        const count = cart.length
+        setCartItemCount(count)
+    }, [cart])
 
     const handleCloseCart = () => {
         setIsCartOpen(false)
@@ -115,8 +131,12 @@ function ResponsiveAppBar() {
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
+                                <MenuItem
+                                    key={page.text}
+                                    onClick={handleCloseNavMenu}
+                                    href={page.link}
+                                >
+                                    <Typography textAlign="center">{page.text}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -143,11 +163,12 @@ function ResponsiveAppBar() {
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
                             <Button
-                                key={page}
+                                key={page.text}
+                                href={page.link}
                                 onClick={handleCloseNavMenu}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
-                                {page}
+                                {page.text}
                             </Button>
                         ))}
                     </Box>

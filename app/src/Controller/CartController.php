@@ -133,7 +133,7 @@ class CartController extends AbstractController
             $entityManager->persist($cart);
             $entityManager->flush();
         }
-      
+
         $entityManager->persist($cart);
         $entityManager->flush();
 

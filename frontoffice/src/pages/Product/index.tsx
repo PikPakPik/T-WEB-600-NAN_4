@@ -2,21 +2,20 @@ import { Product } from '@/common/types/Product'
 import { Box, Button, IconButton, Paper, Skeleton, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
-import MultiImageCatalog from '@/modules/product/categories/MultiImageCatalog'
 import RemoveIcon from '@mui/icons-material/Remove'
 import AddIcon from '@mui/icons-material/Add'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange'
 import ShieldIcon from '@mui/icons-material/Shield'
+import { useAuth } from '@/common/hooks/useAuth'
 import Swal from 'sweetalert2'
 
 const ProductPage = () => {
+    const { user } = useAuth()
+
     const location = useLocation()
-    const [ProductImages, setProductImages] = useState([
-        'https://t3.ftcdn.net/jpg/04/21/88/02/240_F_421880296_IeHkMQblZwDGwPuWG2GuxWW4DAuAZA9h.jpg',
-        'https://t3.ftcdn.net/jpg/00/81/24/72/240_F_81247213_OYvGTCn5mnQQ2c0gWJ1U5ixcbmNBaMOp.jpg',
-    ])
+   
     const { productfromState } = location.state || {}
     const [currentProduct, setCurrentProduct] = useState<Product>(productfromState)
     const { id } = useParams()
@@ -56,41 +55,59 @@ const ProductPage = () => {
     }, [])
     const addTocartBtn = async () => {
         try {
-            Swal.fire({
-                title: 'Processing',
-                html: 'Please wait...',
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                showConfirmButton: false,
-                willOpen: () => {
-                    Swal.showLoading()
-                },
-            })
-            const response = await fetch(`${process.env.API_URL}/carts/${currentProduct.id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
-                },
-                body: JSON.stringify({
-                    quantity: quantity,
-                }),
-            })
-            if (response.ok) {
-                Swal.close()
+            if (user) {
                 Swal.fire({
-                    title: 'Done!',
-                    text: currentProduct.name + ' is now in your cart.',
-                    icon: 'success',
-                    confirmButtonText: 'Okay!',
+                    title: 'Processing',
+                    html: 'Please wait...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    showConfirmButton: false,
+                    willOpen: () => {
+                        Swal.showLoading()
+                    },
                 })
+                const response = await fetch(`${process.env.API_URL}/carts/${currentProduct.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({
+                        quantity: quantity,
+                    }),
+                })
+                if (response.ok) {
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Done!',
+                        text: currentProduct.name + ' is now in your cart.',
+                        icon: 'success',
+                        confirmButtonText: 'Okay!',
+                    }).then(() => {
+                        window.location.href = '/'
+                    })
+                } else {
+                    Swal.close()
+                    Swal.fire({
+                        title: 'Error!',
+                        text:
+                            'An error occured while adding ' +
+                            currentProduct.name +
+                            ' to your cart.',
+                        icon: 'error',
+                        confirmButtonText: 'Okay!',
+                    })
+                }
             } else {
-                Swal.close()
                 Swal.fire({
                     title: 'Error!',
-                    text: 'An error occured while adding ' + currentProduct.name + ' to your cart.',
+                    text: 'You need to be logged in to add products to your cart.',
                     icon: 'error',
                     confirmButtonText: 'Okay!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/login'
+                    }
                 })
             }
         } catch (error) {}
@@ -129,7 +146,7 @@ const ProductPage = () => {
                             height: '100%',
                             objectFit: 'cover',
                         }}
-                        src={currentProduct.photo}
+                        src="https://img.freepik.com/free-photo/black-white-bokeh-particles_1017-3297.jpg?t=st=1715470361~exp=1715473961~hmac=f829f449bdc23e6c3f3c473823b52f3afc8fda5f3fdea30f3c4bd6288098c2a0&w=1380"
                     />
 
                     <Box
@@ -156,19 +173,7 @@ const ProductPage = () => {
                     </Box>
                 </Box>
             )}
-            <Box sx={{ p: 2, mt: 2 }}>
-                <Typography
-                    variant="body1"
-                    sx={{
-                        color: 'black',
-                        textAlign: 'center',
-                        fontWeight: '700',
-                        fontSize: '1.5rem',
-                    }}
-                >
-                    {currentProduct.description}
-                </Typography>
-            </Box>
+            <Box sx={{ p: 2, mt: 2 }}></Box>
             <Box
                 sx={{
                     p: 2,
@@ -189,7 +194,27 @@ const ProductPage = () => {
                 >
                     {currentProduct.name}
                 </Typography>
-                <MultiImageCatalog images={ProductImages} /> {/* currentProduct.images */}
+                <Box sx={{ flex: { xs: '100%', md: '70%' } }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            p: 2,
+                        }}
+                    >
+                        <img
+                            src={currentProduct.photo}
+                            alt="Main"
+                            style={{
+                                maxWidth: '100%',
+                                minHeight: '50vh',
+                                height: 'auto',
+                                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.4)',
+                                borderRadius: '1rem',
+                            }}
+                        />
+                    </Box>
+                </Box>
                 <Box
                     sx={{
                         flex: { xs: '100%', sm: '70%' },
@@ -344,6 +369,17 @@ const ProductPage = () => {
             <Box sx={{ background: 'gray', p: 2, m: 1, borderRadius: '1rem', color: 'white' }}>
                 <Typography variant="h4" sx={{ fontWeight: '700' }}>
                     Product Specifications:
+                </Typography>
+                <Typography
+                    variant="body1"
+                    sx={{
+                        color: 'white',
+                        textAlign: 'center',
+                        fontWeight: '600',
+                        fontSize: '1.5rem',
+                    }}
+                >
+                    {currentProduct.description}
                 </Typography>
             </Box>
         </>
