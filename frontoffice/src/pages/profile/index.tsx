@@ -19,9 +19,9 @@ const ProfilePage = () => {
     useEffect(() => {
         console.log(user)
         if (user) {
-            setUsername(user.username)
-            setFirstName(user.firstname)
-            setFamilyName(user.lastname)
+            setUsername(user.login)
+            setFirstName(user.firstName)
+            setFamilyName(user.lastName)
             setEmail(user.email)
             setAddress(user.address)
             setState(user.state)

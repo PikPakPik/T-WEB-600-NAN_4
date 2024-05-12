@@ -1,16 +1,16 @@
-import { useContext, useEffect, useState } from 'react'
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Button,
-    Typography,
-    Box,
-    IconButton,
-} from '@mui/material'
 import { MyGlobalCartContext } from '@/common/context/CartContext'
 import DeleteIcon from '@mui/icons-material/Delete'
+import {
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    IconButton,
+    Typography,
+} from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
 import Swal from 'sweetalert2'
 
 interface CartComponentProps {
@@ -59,7 +59,7 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
         setTotalPrice(price)
     }, [cart])
 
-    const handleDecreaseQuantity = async (item) => {
+    const handleDecreaseQuantity = async (item: any) => {
         // Check if the quantity is already 1
         if (item.quantity > 1) {
             const updatedQuantity = item.quantity - 1
@@ -73,7 +73,7 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
         }
     }
 
-    const handleIncreaseQuantity = async (item) => {
+    const handleIncreaseQuantity = async (item: any) => {
         const updatedQuantity = item.quantity + 1
 
         const updatedCart = cart.map((cartItem) =>
@@ -84,7 +84,7 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
         setCart(updatedCart)
     }
 
-    const handleDeleteItem = async (item) => {
+    const handleDeleteItem = async (item: any) => {
         const updatedCart = cart.filter((cartItem) => cartItem.product.id !== item.product.id)
 
         const response = await fetch(`${process.env.API_URL}/carts/${item.product.id}`, {
@@ -106,7 +106,7 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
 
         setCart(updatedCart)
     }
-    const updateCartQuantity = async (item, updatedQuantity: number) => {
+    const updateCartQuantity = async (item: any, updatedQuantity: number) => {
         const response = await fetch(`${process.env.API_URL}/carts/${item.id}`, {
             method: 'PATCH',
             headers: {
@@ -117,7 +117,7 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
         })
         if (!response.ok) {
             Swal.fire({
-                title: 'Failed to update quantity of ' + item.name,
+                title: 'Failed to update quantity of ' + item.product.name,
                 text: 'Please try again.',
                 icon: 'error',
                 confirmButtonText: 'Close',
@@ -138,9 +138,9 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
                     Swal.showLoading()
                 },
             })
-            cart.forEach(async (ProductCard) => {
-                await updateCartQuantity(ProductCard.product, ProductCard.quantity)
-            })
+            cart.forEach(
+                async (product) => await updateCartQuantity(product.product, product.quantity)
+            )
             const response = await fetch(`${process.env.API_URL}/carts/validate`, {
                 method: 'POST',
                 headers: {

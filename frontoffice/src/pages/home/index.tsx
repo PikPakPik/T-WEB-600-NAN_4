@@ -249,7 +249,7 @@ const Homepage = () => {
                                     id={category.id}
                                     name={category.name}
                                     image={category.image}
-                                    // change the image from the backend
+                                    active={category.active}
                                 />
                             </SwiperSlide>
                         ))}

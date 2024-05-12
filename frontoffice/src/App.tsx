@@ -16,7 +16,7 @@ import CategoriesPanel from './pages/panel/categories'
 import ProductsTable from './pages/panel/products'
 import UsersPanel from './pages/panel/users'
 import { useState } from 'react'
-import { MyGlobalCartContext } from './common/context/CartContext'
+import { CartProducts, MyGlobalCartContext } from './common/context/CartContext'
 import OrdersPanel from './pages/panel/orders'
 import ContactPage from './pages/contact'
 import ProfilePage from './pages/profile'
@@ -27,7 +27,7 @@ function ProtectedRoute({ children }: any) {
 }
 
 function App() {
-    const [cart, setCart] = useState([])
+    const [cart, setCart] = useState<CartProducts[]>([])
     return (
         <BrowserRouter>
             <MyGlobalCartContext.Provider value={{ cart, setCart }}>
