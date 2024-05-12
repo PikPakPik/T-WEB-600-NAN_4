@@ -36,10 +36,15 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   node-version: lts/*
+            - uses: pnpm/action-setup@v4
+              name: Install pnpm
+              with:
+                  version: 9
+                  run_install: false
             - name: Install dependencies
-              run: cd frontoffice && npm ci
+              run: cd frontoffice && pnpm i
             - name: Lint
-              run: cd frontoffice && npm run lint
+              run: cd frontoffice && pnpm run lint
     tests_front:
         needs: [build_front]
         timeout-minutes: 60
@@ -49,8 +54,13 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   node-version: lts/*
+            - uses: pnpm/action-setup@v4
+              name: Install pnpm
+              with:
+                  version: 9
+                  run_install: false
             - name: Install dependencies
-              run: cd frontoffice && npm ci
+              run: cd frontoffice && pnpm i
             - name: Install Playwright Browsers
               run: cd frontoffice && npx playwright install --with-deps
             - name: Run Playwright tests
