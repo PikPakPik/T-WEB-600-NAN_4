@@ -21,6 +21,7 @@ class CategoryFixtures extends Fixture
             $category = new Category();
             $category->setName($name);
             $category->setActive($active);
+            $category->setImage($faker->imageUrl());
 
             $this->setReference('category_' . $i, $category);
 

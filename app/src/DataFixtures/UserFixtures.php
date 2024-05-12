@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\User;
+use App\Entity\UserDetails;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -11,7 +12,7 @@ class UserFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $faker = Factory::create();
+        $faker = Factory::create("fr_FR");
         for ($i = 0; $i < 20; $i++) {
             $firstName = $faker->firstName();
             $lastName = $faker->lastName();
@@ -30,7 +31,22 @@ class UserFixtures extends Fixture
             );
             $this->setReference('user_' . $i, $user);
 
-            $manager->persist($user);
+
+            $twoAdresses = $faker->numberBetween(1, 2);
+
+            for ($j = 0; $j < $twoAdresses; $j++) {
+                $userDetails = new UserDetails();
+                $userDetails->setAddress($faker->streetAddress());
+                $userDetails->setCity($faker->city());
+                $userDetails->setZip($faker->postcode());
+                $userDetails->setCountry($faker->country());
+                if ($faker->boolean())
+                    $userDetails->setPhone($faker->phoneNumber());
+                if ($faker->boolean())
+                    $userDetails->setState($faker->region());
+                $userDetails->setOwner($user);
+                $manager->persist($userDetails);
+            }
         }
 
         $devadmin = new User();

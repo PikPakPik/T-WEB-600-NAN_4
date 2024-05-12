@@ -58,9 +58,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'owner')]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, UserDetails>
+     */
+    #[Groups(['user:read', 'cart:read'])]
+    #[ORM\OneToMany(targetEntity: UserDetails::class, mappedBy: 'owner')]
+    private Collection $userDetails;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->userDetails = new ArrayCollection();
     }
 
     /**
@@ -222,6 +230,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($order->getOwner() === $this) {
                 $order->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserDetails>
+     */
+    public function getUserDetails(): Collection
+    {
+        return $this->userDetails;
+    }
+
+    public function addUserDetail(UserDetails $userDetail): static
+    {
+        if (!$this->userDetails->contains($userDetail)) {
+            $this->userDetails->add($userDetail);
+            $userDetail->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserDetail(UserDetails $userDetail): static
+    {
+        if ($this->userDetails->removeElement($userDetail)) {
+            // set the owning side to null (unless already changed)
+            if ($userDetail->getOwner() === $this) {
+                $userDetail->setOwner(null);
             }
         }
 

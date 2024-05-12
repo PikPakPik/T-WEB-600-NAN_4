@@ -8,7 +8,7 @@ const ProfilePage = () => {
     const { user } = useAuth()
     const [username, setUsername] = useState('')
     const [firstName, setFirstName] = useState('')
-    const [familyName, setFamilyName] = useState('')
+    const [lastName, setLastName] = useState('')
     const [email, setEmail] = useState('')
     const [address, setAddress] = useState('')
     const [state, setState] = useState('')
@@ -21,14 +21,14 @@ const ProfilePage = () => {
         if (user) {
             setUsername(user.login)
             setFirstName(user.firstName)
-            setFamilyName(user.lastName)
+            setLastName(user.lastName)
             setEmail(user.email)
-            setAddress(user.address)
-            setState(user.state)
-            setCity(user.city)
-            setZipCode(user.zipCode)
-            setCountry(user.country)
-            setPhoneNumber(user.phoneNumber)
+            setAddress(user.details[0].address)
+            setState(user.details[0].state)
+            setCity(user.details[0].city)
+            setZipCode(user.details[0].zip)
+            setCountry(user.details[0].country)
+            setPhoneNumber(user.details[0].phone)
         } else {
             Swal.fire({
                 icon: 'error',
@@ -50,16 +50,16 @@ const ProfilePage = () => {
                     Authorization: `Bearer ${localStorage.getItem('token')}`,
                 },
                 body: JSON.stringify({
-                    // username,
-                    firstname: firstName,
-                    lastname: familyName,
-                    email: email,
-                    // address,
-                    // state,
-                    // city,
-                    // zipCode,
-                    // country,
-                    // phoneNumber,
+                    username,
+                    firstName,
+                    lastName,
+                    email,
+                    address,
+                    state,
+                    city,
+                    zipCode,
+                    country,
+                    phoneNumber,
                 }),
             })
             if (response.ok) {
@@ -213,8 +213,8 @@ const ProfilePage = () => {
                                         },
                                     },
                                 }}
-                                value={familyName}
-                                onChange={(e) => setFamilyName(e.target.value)}
+                                value={lastName}
+                                onChange={(e) => setLastName(e.target.value)}
                             />
                         </Box>
 
