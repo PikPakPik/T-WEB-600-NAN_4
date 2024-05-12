@@ -127,6 +127,7 @@ const Homepage = () => {
                                 fontWeight: '700',
                                 color: 'white',
                             }}
+                            href="#productsBox"
                         >
                             Shop Now
                         </Button>
@@ -175,13 +176,15 @@ const Homepage = () => {
                             fontWeight: '700',
                             color: 'white',
                         }}
+                        onClick={() => navigate('/register')}
                     >
-                        Shop Now
+                        Join us
                     </Button>
                 </Box>
             </Box>
             <Box sx={{ backgroundColor: 'black', padding: '2rem' }}>
                 <Typography
+                    id="productsBox"
                     variant="h2"
                     sx={{
                         fontSize: { xs: '1.7rem', md: '2.2rem' },
@@ -475,6 +478,7 @@ const Homepage = () => {
                                 fontWeight: '700',
                                 color: 'white',
                             }}
+                            onClick={() => navigate('/register')}
                         >
                             Join Now
                         </Button>
