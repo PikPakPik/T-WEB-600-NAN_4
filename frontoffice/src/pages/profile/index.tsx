@@ -23,12 +23,12 @@ const ProfilePage = () => {
             setFirstName(user.firstName)
             setLastName(user.lastName)
             setEmail(user.email)
-            setAddress(user.details[0].address)
-            setState(user.details[0].state)
-            setCity(user.details[0].city)
-            setZipCode(user.details[0].zip)
-            setCountry(user.details[0].country)
-            setPhoneNumber(user.details[0].phone)
+            setAddress(user.userDetails[0].address)
+            setState(user.userDetails[0].state)
+            setCity(user.userDetails[0].city)
+            setZipCode(user.userDetails[0].zip)
+            setCountry(user.userDetails[0].country)
+            setPhoneNumber(user.userDetails[0].phone)
         } else {
             Swal.fire({
                 icon: 'error',

@@ -101,7 +101,6 @@ const ModalUpsertUser = ({
             })
     }
 
-    console.log(data?.roles)
     return (
         <Modal
             open={open}

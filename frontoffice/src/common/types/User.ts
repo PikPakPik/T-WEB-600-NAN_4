@@ -9,7 +9,7 @@ export interface User {
     email: string
     password: string
     roles: Roles[]
-    details: UserDetails[]
+    userDetails: UserDetails[]
     createdAt: Date
     updatedAt: Date
     deletedAt: Date

@@ -106,6 +106,8 @@ class OrderController extends AbstractController
             ];
         }
 
+        $firstDetails = $order->getOwner()->getUserDetails() ? $order->getOwner()->getUserDetails()[0] : [];
+
         $session = $stripe->checkout->sessions->create([
             'success_url' => 'http://localhost/success',
             'customer_email' => $this->getUser()->getEmail(),

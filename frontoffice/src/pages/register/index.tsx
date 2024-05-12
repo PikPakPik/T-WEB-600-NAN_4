@@ -4,7 +4,7 @@ import Swal from 'sweetalert2'
 
 const RegisterPage = () => {
     const API_URL = process.env.API_URL
-    const [username, setUsername] = useState('')
+    const [login, setLogin] = useState('')
     const [firstName, setFirstName] = useState('')
     const [familyName, setFamilyName] = useState('')
     const [email, setEmail] = useState('')
@@ -160,8 +160,8 @@ const RegisterPage = () => {
                                 },
                             },
                         }}
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        value={login}
+                        onChange={(e) => setLogin(e.target.value)}
                     />
                     <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2 }}>
                         <TextField

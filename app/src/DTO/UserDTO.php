@@ -2,6 +2,7 @@
 
 namespace App\DTO;
 
+use App\Entity\UserDetails;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class UserDTO
@@ -17,6 +18,8 @@ class UserDTO
     #[Assert\NotBlank]
     #[Assert\Email]
     public string $email;
+
+    public UserDetails $userDetails;
 
 
     /**
@@ -49,5 +52,10 @@ class UserDTO
     public function getLogin(): string
     {
         return $this->login;
+    }
+
+    public function getUserDetails(): UserDetails
+    {
+        return $this->userDetails;
     }
 }

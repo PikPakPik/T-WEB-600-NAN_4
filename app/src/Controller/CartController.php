@@ -77,6 +77,7 @@ class CartController extends AbstractController
             $total += $orderProduct->getBuyPrice() * $orderProduct->getQuantity();
             $orderProduct->setOrderId($order);
             $order->addProduct($orderProduct);
+            $cart->removeProduct($orderProduct);
 
             $entityManager->persist($orderProduct);
         }
@@ -85,8 +86,6 @@ class CartController extends AbstractController
 
         $entityManager->persist($order);
         $entityManager->flush();
-
-        $cart->getProducts()->clear();
 
         $entityManager->persist($cart);
         $entityManager->flush();

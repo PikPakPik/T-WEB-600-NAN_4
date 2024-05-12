@@ -38,9 +38,6 @@ const Cart = ({ isOpen, handleClose }: CartComponentProps) => {
             const data = await response.json()
             if (response.ok) {
                 setCart(data.products)
-                console.log(data)
-                console.log(cart)
-                //console.log(cart,data.products)
             } else {
                 throw new Error('Failed to fetch cart items')
             }
