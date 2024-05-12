@@ -19,7 +19,7 @@ jobs:
                   version: 9
                   run_install: false
             - name: Install dependencies
-              run: cd frontoffice && pnpm ci
+              run: cd frontoffice && pnpm i
             - name: Build
               run: cd frontoffice && pnpm run build
             - uses: actions/upload-artifact@v4
